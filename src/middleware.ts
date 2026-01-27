@@ -10,10 +10,17 @@ const intlMiddleware = createMiddleware(routing)
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
+  // 0. SUPER VERBOSE DEBUG
+  console.log(`📡 [Middleware Log] URL: ${req.url}, Method: ${req.method}`)
+
   // 0. Exclude API and static files from Auth Check (intlMiddleware is blocked by matcher config usually, but good to be safe)
   if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname.startsWith('/static')) {
       return NextResponse.next()
   }
+
+  // Debug for Vercel Login Issue
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  console.log(`🔑 [Middleware Log] Path: ${pathname}, HasToken: ${!!token}, Role: ${token?.role}, SecretSet: ${!!process.env.NEXTAUTH_SECRET}`)
 
   // 1. CSRF Protection for state-changing requests
   const csrfCheck = await csrfProtection(req)
@@ -22,13 +29,7 @@ export async function middleware(req: NextRequest) {
   // 1.1. Origin validation for additional CSRF protection
   const originCheck = validateOrigin(req)
   if (originCheck) return originCheck
-  
-  // Debug for Vercel Login Issue
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
-  
-  if (pathname.startsWith('/auth') || pathname.startsWith('/admin')) {
-      console.log(`[Middleware Debug] Path: ${pathname}, HasToken: ${!!token}, Role: ${token?.role}, SecretSet: ${!!process.env.NEXTAUTH_SECRET}`)
-  }
+
   
   // Clean path (remove /en or /id prefix to check roles)
   // Logic: if path is /en/admin, we want to check permissions for /admin
