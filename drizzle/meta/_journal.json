@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1769088131415,
+      "tag": "0000_deep_matthew_murdock",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769177445170,
+      "tag": "0001_vengeful_rogue",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769243422262,
+      "tag": "0002_melodic_overlord",
+      "breakpoints": true
+    }
+  ]
+}

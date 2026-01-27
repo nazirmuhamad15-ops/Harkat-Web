@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harkat Scraper</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🪑 Harkat Scraper</h1>
+      <p class="subtitle">Import produk dari marketplace</p>
+    </header>
+
+    <!-- Settings Section -->
+    <div id="settings-section" class="section">
+      <label for="api-url">Harkat API URL:</label>
+      <input type="text" id="api-url" placeholder="http://localhost:3000" value="http://localhost:3000">
+      <button id="save-settings" class="btn btn-secondary">Simpan</button>
+    </div>
+
+    <!-- Status Section -->
+    <div id="status-section" class="section">
+      <div id="current-site" class="status-badge">
+        <span id="site-icon">🌐</span>
+        <span id="site-name">Tidak dikenal</span>
+      </div>
+    </div>
+
+    <!-- Actions Section -->
+    <div id="actions-section" class="section">
+      <button id="scrape-current" class="btn btn-primary" disabled>
+        📦 Scrape Produk Ini
+      </button>
+      <button id="scrape-all" class="btn btn-secondary" disabled>
+        📋 Scrape Semua di Halaman
+      </button>
+    </div>
+
+    <!-- Result Section -->
+    <div id="result-section" class="section hidden">
+      <h3>Hasil Scrape:</h3>
+      <div id="result-content"></div>
+      <button id="send-to-harkat" class="btn btn-success">
+        ✅ Kirim ke Harkat
+      </button>
+    </div>
+
+    <!-- Log Section -->
+    <div id="log-section" class="section">
+      <div id="log"></div>
+    </div>
+
+    <footer>
+      <a href="#" id="open-harkat">Buka Dashboard Harkat</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

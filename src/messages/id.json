@@ -1,0 +1,84 @@
+{
+  "Common": {
+    "dashboard": "Dashboard",
+    "settings": "Pengaturan",
+    "logout": "Keluar",
+    "profile": "Profil"
+  },
+  "Sidebar": {
+    "dashboard": "Dashboard",
+    "catalog": "Manajemen Katalog",
+    "products": "Produk",
+    "categories": "Kategori",
+    "sales": "Penjualan & Pesanan",
+    "orders": "Pesanan",
+    "customers": "Pelanggan",
+    "finance": "Keuangan",
+    "transactions": "Transaksi",
+    "marketing": "Pemasaran",
+    "promotions": "Promosi",
+    "coupons": "Kupon",
+    "system": "Administrasi Sistem",
+    "users": "Pengguna",
+    "settings": "Pengaturan"
+  },
+  "Navbar": {
+    "home": "Beranda",
+    "products": "Produk",
+    "categories": "Kategori",
+    "inspiration": "Inspirasi",
+    "trackOrder": "Lacak Pesanan",
+    "about": "Informasi Toko",
+    "login": "Masuk atau Daftar",
+    "dashboard": "Dashboard",
+    "logout": "Keluar",
+    "myOrders": "Pesanan Saya",
+    "searchPlaceholder": "Apa yang ingin Anda cari?",
+    "language": "Bahasa"
+  },
+  "Footer": {
+    "tagline": "Membawa inspirasi dan solusi perabot rumah yang terjangkau untuk kehidupan yang lebih baik bagi banyak orang.",
+    "customerService": "Layanan Pelanggan",
+    "howToOrder": "Cara Pemesanan",
+    "shippingReturns": "Info Pengiriman",
+    "privacyPolicy": "Kebijakan Privasi",
+    "contactUs": "Hubungi Kami",
+    "hours": "Jam Operasional",
+    "rights": "Hak Cipta Dilindungi."
+  },
+  "Home": {
+    "promo": {
+      "title": "PROMO MURAH",
+      "subtitle": "Diskon hingga 50% untuk furniture & perabot rumah fungsional"
+    },
+    "values": {
+      "shipping": {
+        "title": "Pengiriman Cerdas",
+        "desc": "Gratis ongkir untuk 30 KM pertama dengan armada internal kami."
+      },
+      "quality": {
+        "title": "Jaminan Kualitas",
+        "desc": "Dengan kayu pilihan terbaik."
+      },
+      "service": {
+        "title": "Gratis Service",
+        "desc": "Gratis service pembaruan cat jika terkelupas."
+      }
+    },
+    "catalog": {
+      "title": "Katalog Kami",
+      "subtitle": "Pilihan Terbaik Untuk Anda",
+      "search": "Cari furnitur...",
+      "category": "Kategori",
+      "allCategories": "Semua Kategori",
+      "notFound": "Produk tidak ditemukan",
+      "notFoundDesc": "Coba kata kunci lain atau ubah filter kategori."
+    },
+    "product": {
+      "addToCart": "Tambah ke Keranjang",
+      "bestseller": "Terlaris",
+      "save": "Hemat",
+      "oldPrice": "Lama:"
+    }
+  }
+}

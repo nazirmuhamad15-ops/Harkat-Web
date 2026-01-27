@@ -1,0 +1,84 @@
+{
+  "Common": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout",
+    "profile": "Profile"
+  },
+  "Sidebar": {
+    "dashboard": "Dashboard",
+    "catalog": "Catalog Management",
+    "products": "Products",
+    "categories": "Categories",
+    "sales": "Sales & Orders",
+    "orders": "Orders",
+    "customers": "Customers",
+    "finance": "Finance",
+    "transactions": "Transactions",
+    "marketing": "Marketing",
+    "promotions": "Promotions",
+    "coupons": "Coupons",
+    "system": "System Administration",
+    "users": "Users",
+    "settings": "Settings"
+  },
+  "Navbar": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "inspiration": "Inspiration",
+    "trackOrder": "Track Order",
+    "about": "About Store",
+    "login": "Login or Register",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "myOrders": "My Orders",
+    "searchPlaceholder": "What are you looking for?",
+    "language": "Language"
+  },
+  "Footer": {
+    "tagline": "Bringing inspiration and affordable home solutions for a better everyday life.",
+    "customerService": "Customer Service",
+    "howToOrder": "How to Order",
+    "shippingReturns": "Shipping Info",
+    "privacyPolicy": "Privacy Policy",
+    "contactUs": "Contact Us",
+    "hours": "Operational Hours",
+    "rights": "All Rights Reserved."
+  },
+  "Home": {
+    "promo": {
+      "title": "CHEAP PROMO",
+      "subtitle": "Up to 50% discount on functional furniture & home furnishings"
+    },
+    "values": {
+      "shipping": {
+        "title": "Smart Shipping",
+        "desc": "Free shipping for first 30 KM with our internal fleet."
+      },
+      "quality": {
+        "title": "Quality Guarantee",
+        "desc": "With the best selected wood."
+      },
+      "service": {
+        "title": "Free Service",
+        "desc": "Free paint renewal service if peeled off."
+      }
+    },
+    "catalog": {
+      "title": "Our Catalog",
+      "subtitle": "Best Choice For You",
+      "search": "Search furniture...",
+      "category": "Category",
+      "allCategories": "All Categories",
+      "notFound": "Products not found",
+      "notFoundDesc": "Try other keywords or change category filter."
+    },
+    "product": {
+      "addToCart": "Add to Cart",
+      "bestseller": "Best Seller",
+      "save": "Save",
+      "oldPrice": "Old:"
+    }
+  }
+}

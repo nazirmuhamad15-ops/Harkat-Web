@@ -1,0 +1,181 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
+
+export const config = {
+  matcher: [
+    '/admin/:path*',
+    '/driver/:path*',
+    '/api/admin/:path*',
+    '/api/driver/:path*',
+  ],
+}
+
+const routePermissions = {
+  SUPER_ADMIN_ONLY: [
+    '/admin/system',
+    '/admin/analytics',
+    '/admin/users',
+    '/admin/settings',
+    '/admin/logs',
+  ],
+  ADMIN_ACCESS: [
+    '/admin',
+    '/admin/dashboard',
+    '/admin/products',
+    '/admin/orders',
+    '/admin/catalog',
+    '/admin/sales',
+  ],
+  DRIVER_ACCESS: [
+    '/driver',
+    '/driver/dashboard',
+    '/driver/tasks',
+    '/driver/profile',
+  ],
+  API_ADMIN: [
+    '/api/admin',
+    '/api/admin/users',
+    '/api/admin/settings',
+    '/api/admin/logs',
+  ],
+  API_DRIVER: [
+    '/api/driver',
+    '/api/driver/tasks',
+    '/api/driver/gps',
+    '/api/driver/pod',
+  ],
+}
+
+function hasPermission(userRole: string, pathname: string): boolean {
+  if (userRole === 'SUPER_ADMIN') {
+    return true
+  }
+  
+  if (routePermissions.SUPER_ADMIN_ONLY.some(route => pathname.startsWith(route))) {
+    return false
+  }
+  
+  if (routePermissions.API_ADMIN.some(route => pathname.startsWith(route))) {
+    return userRole === 'SUPER_ADMIN'
+  }
+  
+  if (routePermissions.ADMIN_ACCESS.some(route => pathname.startsWith(route))) {
+    return userRole === 'ADMIN' || userRole === 'SUPER_ADMIN'
+  }
+  
+  if (routePermissions.DRIVER_ACCESS.some(route => pathname.startsWith(route))) {
+    return userRole === 'DRIVER'
+  }
+  
+  if (routePermissions.API_DRIVER.some(route => pathname.startsWith(route))) {
+    return userRole === 'DRIVER'
+  }
+  
+  return false
+}
+
+function getRedirectPath(userRole: string, pathname: string): string {
+  if (pathname.startsWith('/admin')) {
+    if (userRole === 'DRIVER') {
+      return '/driver'
+    }
+    if (userRole === 'ADMIN' && pathname.startsWith('/admin/system')) {
+      return '/admin/dashboard'
+    }
+  }
+  
+  if (pathname.startsWith('/driver')) {
+    if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
+      return '/admin'
+    }
+  }
+  
+  return '/auth/signin'
+}
+
+async function logUserActivity(userId: string, action: string, request: NextRequest) {
+  try {
+    const response = await fetch(`${request.nextUrl.origin}/api/admin/logs/activity`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        action,
+        ipAddress: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+        userAgent: request.headers.get('user-agent') || 'unknown',
+      }),
+    })
+  } catch (error) {
+    console.error('Failed to log user activity:', error)
+  }
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  
+  console.log('🔐 Middleware called for:', pathname)
+  
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/static') ||
+    pathname === '/' ||
+    pathname.startsWith('/store') ||
+    pathname.startsWith('/track') ||
+    pathname.startsWith('/api/public') ||
+    pathname.startsWith('/api/webhooks')
+  ) {
+    console.log('✅ Public route allowed')
+    return NextResponse.next()
+  }
+  
+  const token = await getToken({ 
+    req: request, 
+    secret: process.env.NEXTAUTH_SECRET 
+  })
+  
+  console.log('🔐 Token from NextAuth:', !!token)
+  
+  if (!token || !token.role) {
+    console.log('❌ No token, redirecting to sign in')
+    const url = new URL('/auth/signin', request.url)
+    url.searchParams.set('callbackUrl', pathname)
+    return NextResponse.redirect(url)
+  }
+  
+  console.log('👤 User role:', token.role)
+  const hasAccess = hasPermission(token.role as string, pathname)
+  
+  console.log('🔐 Has access:', hasAccess)
+  
+  if (!hasAccess) {
+    const redirectPath = getRedirectPath(token.role as string, pathname)
+    console.log('❌ No access, redirecting to:', redirectPath)
+    return NextResponse.redirect(new URL(redirectPath, request.url))
+  }
+  
+  if (token.sub && (pathname.startsWith('/admin') || pathname.startsWith('/driver'))) {
+    console.log('📝 Logging user activity')
+    logUserActivity(token.sub, 'VIEW', request)
+  }
+  
+  if (pathname.startsWith('/api/')) {
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set('x-user-id', token.sub || '')
+    requestHeaders.set('x-user-role', token.role as string)
+    requestHeaders.set('x-user-email', token.email || '')
+    
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    })
+  }
+  
+  console.log('✅ Middleware passed, proceeding to Next.js')
+  return NextResponse.next()
+}
