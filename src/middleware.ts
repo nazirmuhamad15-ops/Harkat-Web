@@ -23,7 +23,12 @@ export async function middleware(req: NextRequest) {
   const originCheck = validateOrigin(req)
   if (originCheck) return originCheck
   
+  // Debug for Vercel Login Issue
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  
+  if (pathname.startsWith('/auth') || pathname.startsWith('/admin')) {
+      console.log(`[Middleware Debug] Path: ${pathname}, HasToken: ${!!token}, Role: ${token?.role}, SecretSet: ${!!process.env.NEXTAUTH_SECRET}`)
+  }
   
   // Clean path (remove /en or /id prefix to check roles)
   // Logic: if path is /en/admin, we want to check permissions for /admin
