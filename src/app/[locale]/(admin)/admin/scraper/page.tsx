@@ -290,11 +290,18 @@ export default function ScraperPage() {
             ? (typeof product.specifications === 'string' ? JSON.parse(product.specifications) : product.specifications)
             : {};
         
-        // Keys found in Shopee: "Panjang", "Lebar", "Tinggi", "Berat Produk"
-        const p = specs['Panjang'] || specs['Length'] || '';
-        const l = specs['Lebar'] || specs['Width'] || '';
-        const t = specs['Tinggi'] || specs['Height'] || '';
-        const b = specs['Berat Produk'] || specs['Berat'] || specs['Weight'] || '';
+        // Normalize keys to support "Panjang ", "panjang", "dimensi (p)", etc.
+        const normalSpecs: Record<string, string> = {};
+        Object.keys(specs).forEach(key => {
+            if (specs[key]) {
+                normalSpecs[key.trim().toLowerCase()] = String(specs[key]);
+            }
+        });
+
+        const p = normalSpecs['panjang'] || normalSpecs['length'] || normalSpecs['dimensi (p)'] || '';
+        const l = normalSpecs['lebar'] || normalSpecs['width'] || normalSpecs['dimensi (l)'] || '';
+        const t = normalSpecs['tinggi'] || normalSpecs['height'] || normalSpecs['dimensi (t)'] || '';
+        const b = normalSpecs['berat produk'] || normalSpecs['berat'] || normalSpecs['weight'] || '';
 
         // Helper to extract numbers
         const cleanVal = (val: string) => val ? (val.match(/\d+/) || ['0'])[0] : '0';
