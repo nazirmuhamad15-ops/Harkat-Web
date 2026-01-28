@@ -304,7 +304,15 @@ export default function ScraperPage() {
     // Extract colors or generic variants
     let initialColors = '';
     try {
-        const variants = product.variants ? (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string)) : [];
+        const rawVariants = product.variants ? (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string)) : [];
+        
+        // Filter out junk variants (Chat, Favorite, etc) - failsafe for existing bad data
+        const variants = rawVariants.filter((v: any) => {
+             const labelBad = /Favorit|Favorite|Share|Bagikan|Chat|Percakapan|Beli|Keranjang/i.test(v.name || '');
+             const optionsBad = v.options?.some((opt: string) => /Chat Sekarang|Beli Sekarang|Masukkan Keranjang/i.test(opt));
+             return !labelBad && !optionsBad;
+        });
+
         if (variants.length > 0) {
             // Prioritize Color/Warna variants
             const colorVariant = variants.find((v: any) => /Warna|Color|Variasi/i.test(v.name));

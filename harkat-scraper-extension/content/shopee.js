@@ -530,6 +530,19 @@ function getVariants() {
   });
 
   candidateContainers.forEach(row => {
+      // 0. Safety Check: Avoid fixed/sticky containers (e.g. Bottom Action Bar, Top Header)
+      let isFixed = false;
+      let curr = row;
+      for (let k = 0; k < 5; k++) { // Check 5 levels up
+          if (!curr || curr === document.body) break;
+          const style = window.getComputedStyle(curr);
+          if (style.position === 'fixed' || style.position === 'sticky') {
+              isFixed = true;
+              break;
+          }
+          curr = curr.parentElement;
+      }
+      if (isFixed) return;
       // 1. Check if this container has a Label sibling or child acting as label
       // Usually the hierarchy is:  [Label] [Container of Buttons] OR [Row [Label] [ButtonsWrapper]]
       
@@ -556,7 +569,7 @@ function getVariants() {
       if (!labelText) return; // No label found, unsafe to assume it's a variant
 
       // 2. Filter out non-variant info rows
-      if (/Kuantitas|Quantity|Stok|Stock|Pengiriman|Shipping|Jaminan|Ongkos|Voucher|Cicilan/i.test(labelText)) return;
+      if (/Kuantitas|Quantity|Stok|Stock|Pengiriman|Shipping|Jaminan|Ongkos|Voucher|Cicilan|Favorit|Favorite|Bagikan|Share|Chat|Percakapan|Beli|Keranjang/i.test(labelText)) return;
       
       // 3. Extract Options from Buttons in this row
     const options = [];
@@ -570,6 +583,10 @@ function getVariants() {
       if (text) {
           // Clean up formatting (e.g. remove "Selected" suffix if any)
           text = text.replace(/[\n\r]+/g, ' ').trim();
+
+          // Aggressive Filter: If button text looks like an action, skip it
+          if (/Chat|Percakapan|Beli|Keranjang|Batal|Simpan|Login|Daftar|Follow|Ikuti/i.test(text)) return;
+
           if (!options.includes(text)) {
             options.push(text);
           }
