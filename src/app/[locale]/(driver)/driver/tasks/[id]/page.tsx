@@ -399,24 +399,28 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                     </div>
                     
                     {/* Photo & Signature - Side by Side */}
-                    <div className="flex gap-2 mb-3">
-                        {/* Photo - Left */}
+                    {/* Photo & Signature - Vertical Layout for Mobile */}
+                    <div className="flex flex-col gap-4 mb-4">
+                        {/* Photo */}
                         <div>
-                            <Label className="text-[10px] font-bold text-stone-600 block mb-1">Foto</Label>
-                            <div className="relative w-40 h-40">
-                                <label className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-stone-200 rounded-lg cursor-pointer bg-stone-50 hover:bg-stone-100 overflow-hidden">
+                            <Label className="text-xs font-bold text-stone-600 block mb-2">Foto Barang di Lokasi</Label>
+                            <div className="relative w-full h-48">
+                                <label className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-stone-300 rounded-lg cursor-pointer bg-stone-50 hover:bg-stone-100 overflow-hidden transition-colors">
                                     {deliveryPhoto ? (
                                         <img src={deliveryPhoto} alt="POD" className="w-full h-full object-cover" />
                                     ) : (
-                                        <Camera className="w-10 h-10 text-stone-400" />
+                                        <div className="flex flex-col items-center gap-2 text-stone-400">
+                                            <Camera className="w-8 h-8" />
+                                            <span className="text-xs font-bold uppercase">Ambil Foto</span>
+                                        </div>
                                     )}
                                     <input type="file" className="hidden" accept="image/*" capture="environment" onChange={handlePhotoUpload} />
                                 </label>
                                 {deliveryPhoto && (
                                     <Button 
                                         variant="ghost" 
-                                        size="sm" 
-                                        className="absolute top-1 right-1 h-6 w-6 p-0 z-10 bg-red-500 hover:bg-red-600 text-white rounded-full" 
+                                        size="icon" 
+                                        className="absolute top-2 right-2 h-8 w-8 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md" 
                                         onClick={() => setDeliveryPhoto(null)}
                                     >
                                         ×
@@ -425,17 +429,17 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                             </div>
                         </div>
 
-                        {/* Signature - Right */}
+                        {/* Signature */}
                         <div>
-                            <Label className="text-[10px] font-bold text-stone-600 block mb-1">TTD</Label>
-                            <div className="relative border-2 border-stone-200 rounded-lg bg-white overflow-hidden w-80 h-40">
+                            <Label className="text-xs font-bold text-stone-600 block mb-2">Tanda Tangan Penerima</Label>
+                            <div className="relative border-2 border-stone-300 rounded-lg bg-white overflow-hidden w-full h-48 touch-none">
                                 <Button 
                                     variant="ghost" 
                                     size="sm" 
-                                    className="absolute top-0.5 right-0.5 h-5 text-[10px] px-1.5 z-10 bg-white/80" 
+                                    className="absolute top-1 right-1 h-6 text-[10px] px-2 z-10 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold border border-stone-200" 
                                     onClick={() => sigPad.current?.clear()}
                                 >
-                                    Hapus
+                                    HAPUS
                                 </Button>
                                 <SignatureCanvas 
                                     ref={sigPad}
