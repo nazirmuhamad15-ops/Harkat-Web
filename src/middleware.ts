@@ -11,7 +11,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   // 0. Exclude API and static files from Auth Check (intlMiddleware is blocked by matcher config usually, but good to be safe)
-  if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname.startsWith('/static')) {
+  if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname.startsWith('/static') || pathname.startsWith('/print')) {
       return NextResponse.next()
   }
 
@@ -114,5 +114,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // Skip all paths that should not be internationalized
-  matcher: ['/((?!api|_next|static|favicon.ico|_vercel|.*\\..*).*)']
+  matcher: ['/((?!api|_next|static|print|favicon.ico|_vercel|.*\\..*).*)']
 }
