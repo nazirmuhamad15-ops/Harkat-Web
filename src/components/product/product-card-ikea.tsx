@@ -89,6 +89,7 @@ export function ProductCardIKEA({
               onToggleFavorite();
             }}
             className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             <Heart
               className={cn(
@@ -109,6 +110,7 @@ export function ProductCardIKEA({
               onAddToCart();
             }}
             className="absolute bottom-3 right-3 p-3 bg-[#0051BA] hover:bg-[#003d73] text-white rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100"
+            aria-label="Add to cart"
           >
             <ShoppingCart className="w-5 h-5" />
           </motion.button>

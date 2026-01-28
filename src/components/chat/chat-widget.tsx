@@ -77,6 +77,7 @@ export function ChatWidget() {
                 size="icon" 
                 onClick={() => setIsOpen(false)}
                 className="text-white hover:bg-white/20 hover:text-white rounded-full h-8 w-8"
+                aria-label="Close chat"
             >
               <X className="w-5 h-5" />
             </Button>
@@ -161,11 +162,12 @@ export function ChatWidget() {
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                     />
-                    <Button 
+                     <Button 
                         type="submit" 
                         size="icon" 
                         className="rounded-full bg-[#0058A3] hover:bg-[#004885] w-10 h-10 shrink-0"
                         disabled={!inputValue.trim()}
+                        aria-label="Send message"
                     >
                         <Send className="w-4 h-4" />
                     </Button>
@@ -182,18 +184,20 @@ export function ChatWidget() {
             "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
             isOpen ? "bg-red-500 hover:bg-red-600 rotate-90 scale-0 opacity-0 absolute" : "bg-[#0058A3] hover:bg-[#004885] scale-100 opacity-100"
         )}
+        aria-label="Open chat"
       >
         <MessageCircle className="w-7 h-7" />
       </Button>
       
       {/* Separate Open Button Animation fix */}
       {isOpen && (
-         <Button
+          <Button
             onClick={() => setIsOpen(false)} 
             className="h-14 w-14 rounded-full shadow-lg bg-[#0058A3] hover:bg-[#004885] flex items-center justify-center"
-         >
+            aria-label="Close chat"
+          >
              <X className="w-7 h-7" />
-         </Button>
+          </Button>
       )}
     </div>
   )

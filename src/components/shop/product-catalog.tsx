@@ -131,6 +131,7 @@ export function ProductCatalog({ initialProducts, categories, initialCategory }:
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder={t('catalog.search')}
+              aria-label={t('catalog.search')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 w-full sm:w-[280px] rounded-full border-stone-200 bg-transparent focus:bg-white transition-colors"
@@ -141,7 +142,7 @@ export function ProductCatalog({ initialProducts, categories, initialCategory }:
             value={searchParams.get('category') || 'all'} 
             onValueChange={handleCategoryChange}
           >
-            <SelectTrigger className="w-full sm:w-[180px] rounded-full border-stone-200">
+            <SelectTrigger className="w-full sm:w-[180px] rounded-full border-stone-200" aria-label="Select Category">
               <SelectValue placeholder={t('catalog.category')} />
             </SelectTrigger>
             <SelectContent>
@@ -156,7 +157,7 @@ export function ProductCatalog({ initialProducts, categories, initialCategory }:
             value={searchParams.get('sort') || 'bestseller'} 
             onValueChange={handleSortChange}
           >
-            <SelectTrigger className="w-full sm:w-[180px] rounded-full border-stone-200">
+            <SelectTrigger className="w-full sm:w-[180px] rounded-full border-stone-200" aria-label="Sort By">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent>

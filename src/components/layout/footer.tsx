@@ -26,7 +26,7 @@ export function Footer() {
                         Harkat Furniture<span className="text-[#FFDB00]">.</span>
                     </h2>
                 </Link>
-                <p className="text-stone-600 leading-relaxed max-w-sm mb-6">
+                <p className="text-gray-700 leading-relaxed max-w-sm mb-6">
                     {t('tagline')}
                 </p>
                 <div className="flex gap-4">
@@ -34,19 +34,19 @@ export function Footer() {
                 </div>
             </div>
             <div>
-                    <h4 className="font-bold text-gray-900 mb-6">{t('customerService')}</h4>
-                    <ul className="space-y-4 text-stone-600">
-                        <li><Link href="/how-to-order" className="hover:underline">{t('howToOrder')}</Link></li>
-                        <li><Link href="/inspiration" className="hover:underline">Inspirasi Ruang</Link></li>
-                        <li><Link href="/shipping-returns" className="hover:underline">{t('shippingReturns')}</Link></li>
-                        <li><Link href="/track" className="hover:underline">Lacak Paket</Link></li>
-                        <li><Link href="/privacy" className="hover:underline">{t('privacyPolicy')}</Link></li>
-                        <li><Link href="/faq" className="hover:underline">FAQs</Link></li>
+                    <h3 className="font-bold text-gray-900 mb-6 text-base">{t('customerService')}</h3>
+                    <ul className="space-y-4 text-gray-700">
+                        <li><Link href="/how-to-order" className="hover:underline hover:text-gray-900 transition-colors">{t('howToOrder')}</Link></li>
+                        <li><Link href="/inspiration" className="hover:underline hover:text-gray-900 transition-colors">Inspirasi Ruang</Link></li>
+                        <li><Link href="/shipping-returns" className="hover:underline hover:text-gray-900 transition-colors">{t('shippingReturns')}</Link></li>
+                        <li><Link href="/track" className="hover:underline hover:text-gray-900 transition-colors">Lacak Paket</Link></li>
+                        <li><Link href="/privacy" className="hover:underline hover:text-gray-900 transition-colors">{t('privacyPolicy')}</Link></li>
+                        <li><Link href="/faq" className="hover:underline hover:text-gray-900 transition-colors">FAQs</Link></li>
                     </ul>
             </div>
             <div>
-                    <h4 className="font-bold text-gray-900 mb-6">{t('contactUs')}</h4>
-                    <ul className="space-y-4 text-stone-600">
+                    <h3 className="font-bold text-gray-900 mb-6 text-base">{t('contactUs')}</h3>
+                    <ul className="space-y-4 text-gray-700">
                         <li className="flex flex-col">
                         <span className="font-bold text-gray-900">WhatsApp</span>
                         <span>{settings['site_whatsapp'] || '+62 838-7406-5238'}</span>
@@ -62,13 +62,13 @@ export function Footer() {
                     </ul>
             </div>
         </div>
-        <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-gray-300 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-stone-500">
+        <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-gray-300 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-700">
             <p>&copy; {new Date().getFullYear()} Harkat Furniture. {t('rights')}</p>
-            <div className="flex gap-6">
-                <Link href="/" className="hover:underline">Cookie Policy</Link>
-                <Link href="/" className="hover:underline">Privacy Policy</Link>
-                <Link href="/" className="hover:underline">Terms & Conditions</Link>
-            </div>
+            <nav className="flex gap-6" aria-label="Footer legal links">
+                <Link href="/cookie-policy" className="hover:underline hover:text-gray-900 transition-colors">Cookie Policy</Link>
+                <Link href="/privacy" className="hover:underline hover:text-gray-900 transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:underline hover:text-gray-900 transition-colors">Terms & Conditions</Link>
+            </nav>
         </div>
     </footer>
   )

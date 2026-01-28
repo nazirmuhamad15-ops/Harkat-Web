@@ -86,7 +86,7 @@ export default function CustomerDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-serif font-bold text-stone-900 mb-2">My Dashboard</h1>
+        <h1 className="text-3xl font-bold text-stone-900 mb-2">My Dashboard</h1>
         <p className="text-stone-500">Manage your orders and account settings.</p>
       </div>
 
@@ -98,7 +98,7 @@ export default function CustomerDashboard() {
                 </div>
                 <div>
                     <p className="text-xs uppercase font-bold tracking-wider text-stone-500 mb-1">Total Orders</p>
-                    <h3 className="text-3xl font-serif font-bold text-stone-900">{data?.stats?.totalOrders || 0}</h3>
+                    <h3 className="text-3xl font-bold text-stone-900">{data?.stats?.totalOrders || 0}</h3>
                 </div>
             </CardContent>
          </Card>
@@ -109,7 +109,7 @@ export default function CustomerDashboard() {
                 </div>
                 <div>
                     <p className="text-xs uppercase font-bold tracking-wider text-stone-500 mb-1">Pending</p>
-                    <h3 className="text-3xl font-serif font-bold text-stone-900">{data?.stats?.pendingOrders || 0}</h3>
+                    <h3 className="text-3xl font-bold text-stone-900">{data?.stats?.pendingOrders || 0}</h3>
                 </div>
             </CardContent>
          </Card>
@@ -120,7 +120,7 @@ export default function CustomerDashboard() {
                 </div>
                 <div>
                     <p className="text-xs uppercase font-bold tracking-wider text-stone-500 mb-1">To Ship</p>
-                    <h3 className="text-3xl font-serif font-bold text-stone-900">{data?.stats?.toShipOrders || 0}</h3>
+                    <h3 className="text-3xl font-bold text-stone-900">{data?.stats?.toShipOrders || 0}</h3>
                 </div>
             </CardContent>
          </Card>
@@ -133,7 +133,7 @@ export default function CustomerDashboard() {
             <CardHeader className="border-b border-stone-100/50 pb-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="font-serif text-xl">Recent Orders</CardTitle>
+                        <CardTitle className="text-xl">Recent Orders</CardTitle>
                         <CardDescription className="text-stone-500">Track your most recent purchases.</CardDescription>
                     </div>
                     <Link href="/customer/orders">
@@ -171,7 +171,7 @@ export default function CustomerDashboard() {
                                         </p>
                                     </div>
                                     <div className="text-left sm:text-right">
-                                        <p className="font-serif font-bold text-xl text-stone-900">{formatPrice(order.total)}</p>
+                                        <p className="font-bold text-xl text-stone-900">{formatPrice(order.total)}</p>
                                         <p className="text-xs text-stone-500 font-medium">
                                             {order.orderItems?.length || 0} items
                                         </p>
@@ -211,7 +211,7 @@ export default function CustomerDashboard() {
         <div className="lg:col-span-1 space-y-6">
              <Card className="border-stone-100 shadow-sm bg-white h-full">
                 <CardHeader>
-                    <CardTitle className="font-serif text-xl">Shipping Address</CardTitle>
+                    <CardTitle className="text-xl">Shipping Address</CardTitle>
                     <CardDescription>Your primary delivery location.</CardDescription>
                 </CardHeader>
                 <CardContent>

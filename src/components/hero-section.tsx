@@ -28,7 +28,6 @@ const HERO_SLIDES = [
   },
   {
     id: 2,
-    // Use an existing product image for bedroom
     image: "/products/bed-1.jpg", 
     title: "Kenyamanan Tidur Terbaik",
     description: "Temukan koleksi kasur dan rangka tempat tidur untuk istirahat yang lebih berkualitas.",
@@ -38,7 +37,6 @@ const HERO_SLIDES = [
   },
   {
     id: 3,
-    // Use an existing product image for dining/kitchen
     image: "/products/dining-table-1.jpg",
     title: "Ruang Makan Modern",
     description: "Solusi meja makan dan kursi estetik untuk momen bersantap yang lebih hangat.",
@@ -48,43 +46,22 @@ const HERO_SLIDES = [
   }
 ]
 
-const CATEGORIES = [
-  { name: "Ruang Tamu", slug: "ruang-tamu" },
-  { name: "Kamar Tidur", slug: "kamar-tidur" },
-  { name: "Ruang Makan", slug: "ruang-makan" },
-  { name: "Dapur", slug: "dapur" },
-  { name: "Ruang Kerja", slug: "ruang-kerja" },
-  { name: "Kamar Mandi", slug: "kamar-mandi" },
-  { name: "Outdoor", slug: "outdoor" },
-  { name: "Dekorasi", slug: "dekorasi" },
-  { name: "Pencahayaan", slug: "pencahayaan" },
-  { name: "Tekstil", slug: "tekstil" },
-]
+interface HeroSectionProps {
+  initialBanners?: any[]
+}
 
-export function HeroSection() {
+export function HeroSection({ initialBanners }: HeroSectionProps) {
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
   const [count, setCount] = React.useState(0)
-  const [banners, setBanners] = React.useState<any[]>([])
+  const [banners, setBanners] = React.useState<any[]>(initialBanners || HERO_SLIDES)
 
-  // Fetch banners from API
+  // Only update if initialBanners changes
   React.useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const res = await fetch('/api/public/banners')
-        const data = await res.json()
-        if (data.success && data.banners.length > 0) {
-          setBanners(data.banners)
-        } else {
-            setBanners(HERO_SLIDES) // Fallback
-        }
-      } catch (error) {
-        console.error('Failed to fetch banners', error)
-        setBanners(HERO_SLIDES) // Fallback
-      }
+    if (initialBanners && initialBanners.length > 0) {
+      setBanners(initialBanners)
     }
-    fetchBanners()
-  }, [])
+  }, [initialBanners])
 
   // Autoplay effect
   React.useEffect(() => {
@@ -107,9 +84,9 @@ export function HeroSection() {
   if (banners.length === 0) return null
 
   return (
-    <section className="relative max-w-7xl mx-auto px-0 md:px-6 py-2 md:py-4">
+    <section className="relative max-w-7xl mx-auto px-0 md:px-6 py-2 md:py-4 min-h-[250px] md:min-h-[350px]">
       {/* Hero Carousel - Reduced Height */}
-      <div className="w-full h-[250px] md:h-[350px]">
+      <div className="w-full h-[250px] md:h-[350px] relative overflow-hidden">
           <Carousel 
             setApi={setApi} 
             className="w-full h-full relative group"
@@ -133,7 +110,8 @@ export function HeroSection() {
                                 alt={slide.title}
                                 fill
                                 className="object-cover object-center"
-                                priority={false} // Optimization: Lazy load mostly, verify logic later
+                                priority={slide.id === banners[0].id} // Set priority for first slide LCP
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
                              />
                          )}
                          {/* Overlay for better text readability */}
@@ -170,19 +148,23 @@ export function HeroSection() {
             <CarouselPrevious className="left-4 bg-white/80 hover:bg-white text-black border-none h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex" />
             <CarouselNext className="right-4 bg-white/80 hover:bg-white text-black border-none h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex" />
             
-            {/* Dots Indicators */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {/* Dots Indicators - Accessible with adequate touch targets */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1" role="tablist" aria-label="Carousel navigation">
                 {banners.map((_, index) => (
                     <button
                         key={index}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                            index === current - 1 
-                            ? "bg-white w-6" 
-                            : "bg-white/50 hover:bg-white/75"
-                        }`}
+                        role="tab"
+                        aria-selected={index === current - 1}
+                        className={`min-w-8 min-h-8 flex items-center justify-center rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/50`}
                         onClick={() => api?.scrollTo(index)}
-                        aria-label={`Go to slide ${index + 1}`}
-                    />
+                        aria-label={`Go to slide ${index + 1} of ${banners.length}`}
+                    >
+                        <span className={`block rounded-full transition-all ${
+                            index === current - 1 
+                            ? "bg-white w-6 h-2" 
+                            : "bg-white/50 hover:bg-white/75 w-2 h-2"
+                        }`} />
+                    </button>
                 ))}
             </div>
           </Carousel>

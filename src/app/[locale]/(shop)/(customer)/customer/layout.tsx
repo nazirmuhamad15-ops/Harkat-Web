@@ -34,8 +34,8 @@ export default function CustomerLayout({
       {/* Navbar */}
       <header className="bg-white border-b border-stone-100 py-4 px-6 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-xl font-serif font-bold tracking-wide text-stone-900">
-            Selamat Datang
+          <Link href="/" className="text-xl font-bold tracking-wide text-[#0058A3]">
+            Harkat Furniture<span className="text-[#FFDB00]">.</span>
           </Link>
           <div className="flex items-center space-x-4">
              <span className="text-sm text-stone-500">

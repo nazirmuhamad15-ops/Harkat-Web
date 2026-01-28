@@ -20,7 +20,10 @@ export function LanguageSwitcher() {
 
   return (
     <Select defaultValue={locale} onValueChange={handleCreate} disabled={isPending}>
-      <SelectTrigger className="w-[80px] h-8 lg:w-[130px] lg:h-9 border-none bg-transparent hover:bg-gray-100 focus:ring-0 focus:ring-offset-0 gap-2">
+      <SelectTrigger 
+        className="w-[80px] h-8 lg:w-[130px] lg:h-9 border-none bg-transparent hover:bg-gray-100 focus:ring-0 focus:ring-offset-0 gap-2"
+        aria-label="Select Language"
+      >
         <Globe className="w-4 h-4 text-gray-500" />
         <SelectValue placeholder="Bahasa" />
       </SelectTrigger>

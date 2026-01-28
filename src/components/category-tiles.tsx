@@ -33,16 +33,15 @@ function CategoryTile({ category }: { category: Category }) {
             src={category.image}
             alt={category.name}
             fill
-            unoptimized={category.image.startsWith('http')}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-stone-100 to-stone-200">
+          <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-stone-100 to-stone-200" role="img" aria-label={`${category.name} category placeholder`}>
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-2 bg-stone-300 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
@@ -52,9 +51,9 @@ function CategoryTile({ category }: { category: Category }) {
       </div>
       
       <div className="text-left">
-        <h4 className="text-sm md:text-base font-bold text-gray-900 group-hover:underline decoration-gray-900 underline-offset-2">
+        <span className="text-sm md:text-base font-bold text-gray-900 group-hover:underline decoration-gray-900 underline-offset-2">
           {category.name}
-        </h4>
+        </span>
         {category.count && (
           <p className="text-xs text-stone-500">{category.count} produk</p>
         )}

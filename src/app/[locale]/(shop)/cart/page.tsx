@@ -54,7 +54,7 @@ export default function CartPage() {
           <div className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-6 text-center">
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100 max-w-md w-full">
                   <ShoppingBag className="w-16 h-16 text-stone-300 mx-auto mb-6" />
-                  <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">Keranjang Anda Kosong</h2>
+                  <h2 className="text-2xl font-bold text-stone-900 mb-2">Keranjang Anda Kosong</h2>
                   <p className="text-stone-500 mb-8">Sepertinya Anda belum menambahkan produk apapun. Mari temukan furnitur impian Anda.</p>
                   <Link href="/products">
                     <Button className="w-full h-12 rounded-full bg-stone-900 text-white hover:bg-stone-800">
@@ -72,7 +72,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-stone-50 font-sans text-stone-900 pb-20">
         <header className="bg-white border-b border-stone-100 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                <Link href="/" className="font-serif font-bold text-xl">Harkat Furniture</Link>
+                <Link href="/" className="font-bold text-xl text-[#0058A3]">Harkat Furniture<span className="text-[#FFDB00]">.</span></Link>
                 <Link href="/catalog">
                     <Button variant="ghost" size="sm" className="text-stone-600">Lanjut Belanja</Button>
                 </Link>
@@ -80,7 +80,7 @@ export default function CartPage() {
         </header>
 
         <main className="max-w-7xl mx-auto px-6 py-8">
-            <h1 className="text-3xl font-serif font-bold mb-8">Shopping Cart ({cart.items.length})</h1>
+            <h1 className="text-3xl font-bold mb-8">Shopping Cart ({cart.items.length})</h1>
             
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Cart Items List */}
@@ -111,6 +111,7 @@ export default function CartPage() {
                                     <Checkbox 
                                         checked={item.selected}
                                         onCheckedChange={() => cart.toggleItem(item.id)}
+                                        aria-label={`Select ${item.name}`}
                                     />
                                 </div>
                                 
@@ -123,7 +124,7 @@ export default function CartPage() {
                                 <div className="flex-1 flex flex-col justify-between">
                                     <div>
                                         <div className="flex justify-between items-start">
-                                            <h3 className="font-serif font-bold text-stone-900">{item.name}</h3>
+                                            <h3 className="font-bold text-stone-900">{item.name}</h3>
                                             <div className="text-right">
                                                 <p className="font-bold text-stone-900">{formatPrice(item.price * item.quantity)}</p>
                                                 {item.quantity > 1 && (
@@ -135,17 +136,19 @@ export default function CartPage() {
                                     </div>
 
                                     <div className="flex justify-between items-end mt-4">
-                                        <div className="flex items-center bg-stone-100 rounded-full h-8 px-1">
+                                        <div className="flex items-center bg-stone-100 rounded-full h-8 px-1" role="group" aria-label="Quantity controls">
                                             <button 
                                                 className="w-7 h-full flex items-center justify-center text-stone-600 hover:text-stone-900"
                                                 onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                                aria-label={`Decrease quantity of ${item.name}`}
                                             >
                                                 <Minus className="w-3 h-3" />
                                             </button>
-                                            <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                                            <span className="w-8 text-center text-sm font-medium" aria-live="polite">{item.quantity}</span>
                                             <button 
                                                 className="w-7 h-full flex items-center justify-center text-stone-600 hover:text-stone-900"
                                                 onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                                aria-label={`Increase quantity of ${item.name}`}
                                             >
                                                 <Plus className="w-3 h-3" />
                                             </button>
@@ -153,7 +156,7 @@ export default function CartPage() {
                                         
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="text-stone-400 hover:text-red-500">
+                                                <Button variant="ghost" size="icon" className="text-stone-400 hover:text-red-500" aria-label={`Remove ${item.name} from cart`}>
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
                                             </AlertDialogTrigger>
@@ -181,7 +184,7 @@ export default function CartPage() {
                 {/* Summary Sidebar */}
                 <div className="lg:w-96 space-y-6">
                     <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm sticky top-24">
-                        <h2 className="font-serif font-bold text-xl mb-6">Ringkasan Pesanan</h2>
+                        <h2 className="font-bold text-xl mb-6">Ringkasan Pesanan</h2>
                         
                         <div className="mb-6">
                              <CouponInput />

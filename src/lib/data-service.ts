@@ -1,6 +1,6 @@
 import { db } from '@/lib/db-drizzle'
-import { products, productVariants, categories } from '@/db/schema'
-import { eq, like, desc, and, or, gte } from 'drizzle-orm'
+import { products, productVariants, categories, banners } from '@/db/schema'
+import { eq, like, desc, and, or, gte, asc } from 'drizzle-orm'
 
 export interface ProductFilterParams {
   category?: string;
@@ -119,5 +119,12 @@ export const DataService = {
         image: cat.image || '/placeholder.jpg',
         description: cat.description
     }))
+  },
+
+  async getBanners() {
+    return await db.query.banners.findMany({
+        where: eq(banners.isActive, true),
+        orderBy: asc(banners.order)
+    })
   }
 }

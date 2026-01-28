@@ -16,7 +16,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
       <div className="h-screen flex items-center justify-center bg-stone-50">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-stone-900 mb-4"></div>
-          <p className="text-stone-600 font-medium font-serif">Memuat Portal Driver...</p>
+          <p className="text-stone-600 font-medium font-sans">Memuat Portal Driver...</p>
         </div>
       </div>
     )

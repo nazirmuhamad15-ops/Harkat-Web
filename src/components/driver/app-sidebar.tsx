@@ -35,7 +35,7 @@ export function DriverSidebar({ user, ...props }: React.ComponentProps<typeof Si
              <div className="bg-white p-1.5 rounded-lg shrink-0">
                 <Truck className="w-5 h-5 text-stone-950" />
             </div>
-             <span className="font-serif font-bold text-lg group-data-[collapsible=icon]:hidden">Driver<span className="text-stone-400">.</span>Portal</span>
+             <span className="font-sans font-bold text-lg group-data-[collapsible=icon]:hidden">Driver<span className="text-stone-400">.</span>Portal</span>
         </div>
       </SidebarHeader>
       

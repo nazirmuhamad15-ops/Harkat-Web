@@ -221,6 +221,7 @@ export default function ProductDetailPage() {
                         fill
                         className="object-cover"
                         priority
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
                     />
                      {product.featured && (
                         <Badge className="absolute top-4 left-4 bg-stone-900 text-white border-0">Best Seller</Badge>
@@ -355,7 +356,7 @@ export default function ProductDetailPage() {
                 {/* Details Accordion */}
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="details">
-                        <AccordionTrigger className="text-stone-900 font-serif">Product Details</AccordionTrigger>
+                        <AccordionTrigger className="text-stone-900 font-medium">Product Details</AccordionTrigger>
                         <AccordionContent className="text-stone-600 space-y-2">
                             <div className="flex justify-between py-1 border-b border-stone-50">
                                 <span>Material</span>
@@ -372,7 +373,7 @@ export default function ProductDetailPage() {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="dimensions">
-                        <AccordionTrigger className="text-stone-900 font-serif">Dimensions & Weight</AccordionTrigger>
+                        <AccordionTrigger className="text-stone-900 font-medium">Dimensions & Weight</AccordionTrigger>
                         <AccordionContent className="text-stone-600">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
@@ -387,7 +388,7 @@ export default function ProductDetailPage() {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="shipping">
-                        <AccordionTrigger className="text-stone-900 font-serif">Shipping & Returns</AccordionTrigger>
+                        <AccordionTrigger className="text-stone-900 font-medium">Shipping & Returns</AccordionTrigger>
                         <AccordionContent className="text-stone-600">
                             <p className="mb-2">Free shipping for orders within Jabodetabek area via our own fleet. For other regions, standard shipping rates apply.</p>
                             <p>We accept returns within 7 days of delivery for defective items.</p>

@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
   // Allow cross-origin requests from Z.ai preview
   allowedDevOrigins: ["preview-chat-bbbdfeab-ddf0-466a-b1c4-bf1ad61aec4a.space.z.ai"],
   images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 3600,
     remotePatterns: [
       {
         protocol: 'https',

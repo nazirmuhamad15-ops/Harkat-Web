@@ -37,7 +37,12 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-black hover:bg-gray-100 rounded-full h-10 w-10">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-black hover:bg-gray-100 rounded-full h-10 w-10"
+                aria-label="Toggle Menu"
+              >
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
@@ -95,12 +100,15 @@ export function Header() {
             type="text" 
             placeholder={t('searchPlaceholder')} 
             className="w-full h-12 pl-12 pr-4 bg-gray-100 hover:bg-gray-200 focus:bg-white border-none rounded-full transition-colors text-base text-gray-900 placeholder:text-gray-500 outline-none ring-2 ring-transparent focus:ring-[#0058A3]"
+            aria-label="Search"
           />
-          <div className="absolute left-1 top-0 bottom-0 flex items-center justify-center pointer-events-none p-2 gap-2">
-            <button className="h-9 w-9 bg-transparent hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors">
-                 <Search className="text-gray-500 w-5 h-5" />
-            </button>
-          </div>
+          <button 
+            type="submit"
+            className="absolute left-1 top-1/2 -translate-y-1/2 h-9 w-9 bg-transparent hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            aria-label="Submit search"
+          >
+            <Search className="text-gray-500 w-5 h-5" />
+          </button>
         </div>
 
         {/* Actions */}
@@ -111,27 +119,33 @@ export function Header() {
           </div>
 
           {/* Mobile Search Trigger */}
-          <Button variant="ghost" size="icon" className="md:hidden text-black hover:bg-gray-100 rounded-full">
+          <Button variant="ghost" size="icon" className="md:hidden text-black hover:bg-gray-100 rounded-full" aria-label="Open Search">
             <Search className="w-6 h-6" />
           </Button>
           
           {/* Cart */}
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative text-black hover:bg-gray-100 rounded-full h-10 w-10">
-              <ShoppingCart className="w-6 h-6" />
-              {mounted && cart.items.length > 0 && (
-                <span className="absolute top-1 right-0 h-4 w-4 rounded-full bg-[#0058A3] text-white text-[10px] flex items-center justify-center font-bold">
-                  {cart.items.length}
-                </span>
-              )}
-            </Button>
+          <Link 
+            href="/cart" 
+            className="relative text-black hover:bg-gray-100 rounded-full h-10 w-10 flex items-center justify-center transition-colors" 
+            aria-label={`Shopping Cart ${mounted && cart.items.length > 0 ? `(${cart.items.length})` : ''}`}
+          >
+            <ShoppingCart className="w-6 h-6" />
+            {mounted && cart.items.length > 0 && (
+              <span className="absolute top-1 right-0 h-4 w-4 rounded-full bg-[#0058A3] text-white text-[10px] flex items-center justify-center font-bold">
+                {cart.items.length}
+              </span>
+            )}
           </Link>
 
           {/* Auth / Profile */}
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full border-none hover:bg-gray-100">
+                <Button 
+                  variant="ghost" 
+                  className="relative h-10 w-10 rounded-full border-none hover:bg-gray-100"
+                  aria-label="Toggle profile menu"
+                >
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={session?.user?.image || ''} alt={session?.user?.name || ''} />
                     <AvatarFallback className="bg-[#FFDB00] text-[#0058A3] flex items-center justify-center font-bold text-xs">
@@ -170,10 +184,12 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Link href="/auth/signin">
-              <Button variant="ghost" size="icon" className="text-black hover:bg-gray-100 rounded-full h-10 w-10">
-                <User className="w-6 h-6" />
-              </Button>
+            <Link 
+              href="/auth/signin" 
+              className="text-black hover:bg-gray-100 rounded-full h-10 w-10 flex items-center justify-center transition-colors" 
+              aria-label="User Account"
+            >
+              <User className="w-6 h-6" />
             </Link>
           )}
         </div>

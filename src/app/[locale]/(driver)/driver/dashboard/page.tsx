@@ -80,7 +80,7 @@ export default function DriverDashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="relative">
-        <h1 className="text-3xl font-serif font-bold text-stone-900 tracking-tight">
+        <h1 className="text-3xl font-sans font-bold text-stone-900 tracking-tight">
           Halo, {session?.user?.name?.split(' ')[0]}!
         </h1>
         <p className="text-stone-500 text-sm mt-1 font-medium">
@@ -113,7 +113,7 @@ export default function DriverDashboardPage() {
       {/* Task List Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-serif font-bold text-stone-900">Tugas Hari Ini</h2>
+          <h2 className="text-lg font-sans font-bold text-stone-900">Tugas Hari Ini</h2>
           <Badge variant="outline" className="border-stone-200 text-stone-500 font-normal">
             {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
           </Badge>
@@ -130,7 +130,7 @@ export default function DriverDashboardPage() {
             <div className="bg-stone-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border border-stone-100">
                 <Truck className="w-10 h-10 text-stone-200" />
             </div>
-            <h3 className="font-serif font-bold text-stone-900 text-lg">Belum Ada Tugas</h3>
+            <h3 className="font-sans font-bold text-stone-900 text-lg">Belum Ada Tugas</h3>
             <p className="text-stone-400 text-sm max-w-[200px] mx-auto">Tunggu admin memberikan penugasan baru untuk Anda.</p>
           </div>
         ) : (

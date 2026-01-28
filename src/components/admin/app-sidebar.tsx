@@ -134,8 +134,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <div className="flex bg-sidebar h-12 items-center px-4 border-b border-sidebar-border group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-             <span className="font-serif font-bold text-lg group-data-[collapsible=icon]:hidden">Harkat Admin</span>
-             <span className="font-serif font-bold text-lg hidden group-data-[collapsible=icon]:block">H</span>
+             <span className="font-sans font-bold text-lg group-data-[collapsible=icon]:hidden">Harkat Admin</span>
+             <span className="font-sans font-bold text-lg hidden group-data-[collapsible=icon]:block">H</span>
         </div>
       </SidebarHeader>
       

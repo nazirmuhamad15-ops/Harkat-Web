@@ -124,7 +124,7 @@ export function FuelLogForm({
              <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
                 <Fuel className="w-5 h-5 text-white" />
              </div>
-             <CardTitle className="text-2xl font-serif font-black">Input Log BBM</CardTitle>
+             <CardTitle className="text-2xl font-sans font-black">Input Log BBM</CardTitle>
           </div>
           <p className="text-stone-400 text-xs font-medium">Catat pengeluaran bahan bakar untuk kendaraan operasional.</p>
         </CardHeader>
@@ -203,7 +203,7 @@ export function FuelLogForm({
                     <Input 
                         type="number" 
                         placeholder="000.000" 
-                        className="h-14 rounded-2xl border-stone-100 bg-stone-50 font-serif font-bold text-lg tracking-widest"
+                        className="h-14 rounded-2xl border-stone-100 bg-stone-50 font-sans font-bold text-lg tracking-widest"
                         value={formData.odometer}
                         onChange={e => setFormData({...formData, odometer: e.target.value})}
                         required
@@ -250,7 +250,7 @@ export function FuelLogForm({
 
             <Button 
                 type="submit" 
-                className="w-full h-20 rounded-3xl bg-stone-900 hover:bg-stone-800 text-white text-lg font-serif font-bold shadow-2xl shadow-stone-200 active:scale-95 transition-all" 
+                className="w-full h-20 rounded-3xl bg-stone-900 hover:bg-stone-800 text-white text-lg font-sans font-bold shadow-2xl shadow-stone-200 active:scale-95 transition-all" 
                 disabled={isPending || !formData.vehicleId}
             >
                 {isPending ? (
@@ -273,7 +273,7 @@ export function FuelLogForm({
         <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
                 <History className="w-5 h-5 text-stone-900" />
-                <h2 className="text-xl font-serif font-black text-stone-900">Riwayat Terakhir</h2>
+                <h2 className="text-xl font-sans font-black text-stone-900">Riwayat Terakhir</h2>
             </div>
             <Badge variant="outline" className="rounded-full border-stone-200 text-stone-400 font-black text-[9px] px-2 py-0.5 tracking-widest">
                 5 INPUT TERAKHIR
@@ -302,7 +302,7 @@ export function FuelLogForm({
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-serif font-black text-stone-900 text-lg">{formatCurrency(log.cost)}</p>
+                            <p className="font-sans font-black text-stone-900 text-lg">{formatCurrency(log.cost)}</p>
                             <p className="text-[10px] text-stone-400 font-black uppercase tracking-tighter mt-1">
                                 {log.liters} L <span className="mx-1">•</span> {log.odometer.toLocaleString()} KM
                             </p>

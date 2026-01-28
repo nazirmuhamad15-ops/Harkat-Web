@@ -30,7 +30,7 @@ export default function DriverProfilePage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header section is already in layout, but we can add a page specific indicator if needed */}
       <div className="relative">
-        <h1 className="text-3xl font-serif font-black text-stone-900 tracking-tight">
+        <h1 className="text-3xl font-sans font-black text-stone-900 tracking-tight">
           Profil Saya
         </h1>
         <p className="text-stone-500 text-sm mt-1 font-medium"> Kelola akun dan keamanan Anda. </p>
@@ -44,7 +44,7 @@ export default function DriverProfilePage() {
                     <div className="relative group">
                         <Avatar className="w-28 h-28 border-4 border-white/10 shadow-2xl transition-transform group-hover:scale-105">
                             <AvatarImage src={user.image || ''} />
-                            <AvatarFallback className="text-3xl bg-white text-stone-900 font-serif font-black">
+                            <AvatarFallback className="text-3xl bg-white text-stone-900 font-sans font-black">
                                 {user.name?.charAt(0).toUpperCase()}
                             </AvatarFallback>
                         </Avatar>
@@ -55,7 +55,7 @@ export default function DriverProfilePage() {
                     
                     <div className="flex-1 text-center sm:text-left space-y-4">
                         <div className="space-y-1">
-                            <h2 className="text-3xl font-serif font-black tracking-tight">{user.name}</h2>
+                            <h2 className="text-3xl font-sans font-black tracking-tight">{user.name}</h2>
                             <p className="text-stone-400 font-medium">{user.email}</p>
                         </div>
                         

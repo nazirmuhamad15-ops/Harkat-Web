@@ -11,7 +11,8 @@ interface HomeProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export const dynamic = 'force-dynamic' // Ensure fresh data on every request (Next.js 14/15 safe)
+// export const dynamic = 'force-dynamic' // Removed for performance
+export const revalidate = 60 // ISR: Revalidate every 60 seconds
 
 export default async function Home(props: HomeProps) {
   const searchParams = await props.searchParams
@@ -23,7 +24,7 @@ export default async function Home(props: HomeProps) {
   const search = typeof searchParams.search === 'string' ? searchParams.search : undefined
   
   // Parallel Data Fetching
-  const [productsData, categories] = await Promise.all([
+  const [productsData, categories, banners] = await Promise.all([
     DataService.getProducts({
       category: category === 'all' ? undefined : category,
       sort,
@@ -31,14 +32,15 @@ export default async function Home(props: HomeProps) {
       page: 1,
       limit: 12
     }),
-    DataService.getCategories()
+    DataService.getCategories(),
+    DataService.getBanners()
   ])
 
   return (
     <div className="min-h-screen bg-neutral-50 font-sans text-stone-900">
       <main>
         {/* Modern Hero Section (Carousel + Sidebar) */}
-        <HeroSection />
+        <HeroSection initialBanners={banners} />
 
         {/* Promotional Banner */}
         <PromotionalBanner 
@@ -64,7 +66,7 @@ export default async function Home(props: HomeProps) {
                         <Truck className="w-6 h-6" />
                     </div>
                     <div>
-                        <h4 className="font-serif font-bold text-lg mb-1">{t('values.shipping.title')}</h4>
+                        <h4 className="font-bold text-lg mb-1">{t('values.shipping.title')}</h4>
                         <p className="text-sm text-stone-500 leading-relaxed">{t('values.shipping.desc')}</p>
                     </div>
                 </div>
