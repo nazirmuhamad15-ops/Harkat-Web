@@ -459,179 +459,172 @@ export default function ScraperPage() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="flex-1 overflow-auto p-4 w-full">
-        <div className="bg-white rounded-lg border w-full">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">
-                  <Checkbox 
-                    checked={selectedProducts.size === filteredProducts.length && filteredProducts.length > 0}
-                    onCheckedChange={toggleSelectAll}
-                  />
-                </TableHead>
-                <TableHead className="w-[80px]">Image</TableHead>
-                <TableHead className="w-[200px] md:w-[300px]">Produk</TableHead>
-                <TableHead className="w-[100px]">Source</TableHead>
-                <TableHead className="w-[150px]">Detail</TableHead>
-                <TableHead className="text-right w-[120px]">Harga</TableHead>
-                <TableHead className="text-center w-[100px]">Status</TableHead>
-                <TableHead className="text-center w-[100px]">Tanggal</TableHead>
-                <TableHead className="text-right w-[80px]">Aksi</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="h-24 text-center">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2" />
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : filteredProducts.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="h-24 text-center text-stone-500">
-                    <Package className="w-12 h-12 mx-auto mb-2 opacity-20" />
-                    Tidak ada produk. Install extension dan mulai scraping!
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredProducts.map(product => (
-                  <TableRow key={product.id}>
-                    <TableCell>
+      {/* Table - Responsive Container */}
+      <div className="flex-1 overflow-hidden p-4 flex flex-col w-full">
+        <div className="bg-white rounded-lg border w-full flex-1 flex flex-col overflow-hidden shadow-sm">
+           {/* Header - Fixed */}
+           <div className="bg-stone-50 border-b z-10">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-[40px] px-2 text-center h-10">
                       <Checkbox 
-                        checked={selectedProducts.has(product.id)}
-                        onCheckedChange={() => toggleSelectProduct(product.id)}
+                        checked={selectedProducts.size === filteredProducts.length && filteredProducts.length > 0}
+                        onCheckedChange={toggleSelectAll}
                       />
-                    </TableCell>
-                    <TableCell>
-                      <div className="relative w-12 h-12 bg-stone-100 rounded overflow-hidden group shrink-0">
-                        {product.images?.[0] ? (
-                          <img
-                            src={product.images[0]}
-                            alt={JSON.stringify(product.name)}
-                            className="w-full h-full object-cover"
-                            referrerPolicy="no-referrer"
-                            crossOrigin="anonymous"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
+                    </TableHead>
+                    <TableHead className="w-[60px] px-2 h-10">Image</TableHead>
+                    <TableHead className="px-4 h-10">Produk</TableHead>
+                    <TableHead className="w-[90px] px-2 h-10">Source</TableHead>
+                    <TableHead className="w-[120px] px-2 h-10">Detail</TableHead>
+                    <TableHead className="w-[110px] px-2 text-right h-10">Harga</TableHead>
+                    <TableHead className="w-[90px] px-2 text-center h-10">Status</TableHead>
+                    <TableHead className="w-[90px] px-2 text-center h-10">Tanggal</TableHead>
+                    <TableHead className="w-[80px] px-2 text-right h-10">Aksi</TableHead>
+                  </TableRow>
+                </TableHeader>
+              </Table>
+           </div>
+           
+           {/* Body - Scrollable */}
+           <div className="overflow-y-auto flex-1 p-0">
+             <Table>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="h-32 text-center">
+                        <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-3 text-stone-400" />
+                        <span className="text-stone-500">Loading products...</span>
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredProducts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="h-40 text-center text-stone-400">
+                        <Package className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                        <p>Tidak ada produk ditemukan.</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredProducts.map(product => (
+                      <TableRow key={product.id} className="group hover:bg-stone-50 transition-colors">
+                        <TableCell className="w-[40px] px-2 text-center">
+                          <Checkbox 
+                            checked={selectedProducts.has(product.id)}
+                            onCheckedChange={() => toggleSelectProduct(product.id)}
                           />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-stone-400">
-                            <ShoppingBag className="w-5 h-5" />
-                          </div>
-                        )}
-                        {product.images && product.images.length > 1 && (
-                          <div className="absolute bottom-0 right-0 left-0 bg-black/60 text-white text-[9px] font-medium text-center py-0.5">
-                            +{product.images.length - 1}
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="max-w-[200px] md:max-w-[280px]">
-                        <p className="font-medium text-stone-900 truncate" title={product.name}>{product.name}</p>
-                        {product.sourceUrl && (
-                          <a
-                            href={product.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-600 hover:underline flex items-center gap-1"
-                          >
-                            Lihat asli <ExternalLink className="w-3 h-3" />
-                          </a>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={SOURCE_COLORS[product.source] || 'bg-gray-100'} variant="secondary">
-                        {SOURCE_ICONS[product.source]} {product.source}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="max-w-[150px] overflow-hidden text-xs">
-                        {product.variants && (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 0 ? (
-                          <div className="flex flex-col gap-1">
-                            {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).slice(0, 2).map((v: any, i: number) => (
-                               <span key={i} className="bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded w-fit truncate max-w-full" title={`${v.name}: ${v.options?.length} opsi`}>
-                                  {v.name}: {v.options?.length} opsi
-                               </span>
-                            ))}
-                            {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 2 && (
-                                <span className="text-stone-400 text-[10px]">+ more</span>
+                        </TableCell>
+                        <TableCell className="w-[60px] px-2 py-3">
+                          <div className="relative w-10 h-10 bg-stone-100 rounded overflow-hidden border border-stone-200 shrink-0">
+                            {product.images?.[0] ? (
+                              <img
+                                src={product.images[0]}
+                                alt={JSON.stringify(product.name)}
+                                className="w-full h-full object-cover"
+                                referrerPolicy="no-referrer"
+                                crossOrigin="anonymous"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-stone-300">
+                                <ShoppingBag className="w-4 h-4" />
+                              </div>
+                            )}
+                            {product.images && product.images.length > 1 && (
+                              <div className="absolute bottom-0 right-0 left-0 bg-black/50 text-white text-[8px] font-medium text-center">
+                                +{product.images.length - 1}
+                              </div>
                             )}
                           </div>
-                        ) : (
-                          <span className="text-stone-400">-</span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-medium text-sm whitespace-nowrap">
-                      {product.price ? `Rp ${product.price.toLocaleString('id-ID')}` : '-'}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge
-                        variant="secondary"
-                        className={
-                          product.status === 'PENDING'
-                            ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-100'
-                            : product.status === 'IMPORTED'
-                            ? 'bg-green-100 text-green-700 hover:bg-green-100'
-                            : 'bg-red-100 text-red-700 hover:bg-red-100'
-                        }
-                      >
-                        {product.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center text-xs text-stone-500 whitespace-nowrap">
-                      {new Date(product.scrapedAt).toLocaleDateString('id-ID')}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {product.status === 'PENDING' && (
-                          <>
+                        </TableCell>
+                        <TableCell className="px-4 py-3 align-top">
+                          <div className="max-w-[400px] xl:max-w-none grid gap-1">
+                            <p className="font-medium text-sm text-stone-900 line-clamp-2 leading-snug" title={product.name}>
+                              {product.name}
+                            </p>
+                            {product.sourceUrl && (
+                              <a
+                                href={product.sourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[10px] text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 w-fit"
+                              >
+                                Lihat Link Asli <ExternalLink className="w-2.5 h-2.5" />
+                              </a>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="w-[90px] px-2 align-top py-3">
+                          <Badge className={SOURCE_COLORS[product.source] || 'bg-gray-100'} variant="secondary">
+                            {SOURCE_ICONS[product.source]} <span className="ml-1 capitalize">{product.source}</span>
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="w-[120px] px-2 align-top py-3">
+                           <div className="text-xs text-stone-500 max-h-[60px] overflow-hidden">
+                            {product.variants && (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 0 ? (
+                               <div className="space-y-1">
+                                  {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).slice(0, 2).map((v: any, i: number) => (
+                                     <div key={i} className="bg-stone-100 px-1.5 py-0.5 rounded text-[10px] truncate border border-stone-200">
+                                        {v.name}: {v.options?.length}
+                                     </div>
+                                  ))}
+                                  {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 2 && (
+                                    <span className="text-[9px] text-stone-400 pl-1">+ more</span>
+                                  )}
+                               </div>
+                            ) : '-'}
+                           </div>
+                        </TableCell>
+                        <TableCell className="w-[110px] px-2 text-right align-top py-3 font-mono text-sm">
+                          {product.price ? `Rp${(product.price / 1000).toFixed(0)}rb` : '-'}
+                        </TableCell>
+                        <TableCell className="w-[90px] px-2 text-center align-top py-3">
+                          <span className={`
+                            inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border
+                            ${product.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
+                              product.status === 'IMPORTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                              'bg-rose-50 text-rose-700 border-rose-200'}
+                          `}>
+                            {product.status}
+                          </span>
+                        </TableCell>
+                        <TableCell className="w-[90px] px-2 text-center text-xs text-stone-500 align-top py-3">
+                          {new Date(product.scrapedAt).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                        </TableCell>
+                        <TableCell className="w-[80px] px-2 text-right align-top py-3">
+                          <div className="flex items-center justify-end gap-1">
+                            {product.status === 'PENDING' && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 w-7 p-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                                onClick={() => openImportDialog(product)}
+                                title="Import"
+                              >
+                                <Check className="w-4 h-4" />
+                              </Button>
+                            )}
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                              onClick={() => openImportDialog(product)}
-                              title="Import ke Katalog"
+                              className="h-7 w-7 p-0 text-stone-400 hover:text-rose-600 hover:bg-rose-50"
+                              onClick={() => {
+                                setDeleteId(product.id)
+                                setShowDeleteDialog(true)
+                              }}
+                              title="Hapus"
                             >
-                              <Check className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4" />
                             </Button>
-
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                              onClick={() => handleReject(product.id)}
-                              title="Tolak"
-                            >
-                              <X className="w-4 h-4" />
-                            </Button>
-                          </>
-                        )}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => {
-                          setDeleteId(product.id)
-                          setShowDeleteDialog(true)
-                        }}
-                        title="Hapus"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+             </Table>
+           </div>
         </div>
       </div>
 

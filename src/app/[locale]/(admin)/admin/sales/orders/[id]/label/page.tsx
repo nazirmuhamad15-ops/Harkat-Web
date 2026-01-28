@@ -80,6 +80,7 @@ export default function ShippingLabelPage({ params }: { params: Promise<{ id: st
   )
 
   return (
+  return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-stone-100 p-8 sm:p-12 print:p-0 print:bg-white">
       <div className="mb-8 flex items-center justify-between w-[105mm] print:hidden">
         <Link href="/admin/sales/orders">
@@ -94,104 +95,86 @@ export default function ShippingLabelPage({ params }: { params: Promise<{ id: st
         </Button>
       </div>
 
-      {/* A6 Label Container (approx 105mm x 148mm) */}
+      {/* A6 Label Container (105mm x 148mm) - High Contrast / Bordered Style */}
       <div 
-        className="w-[105mm] h-[148mm] bg-white p-6 border border-stone-300 shadow-2xl print:shadow-none print:border-none flex flex-col justify-between overflow-hidden relative"
+        className="w-[105mm] h-[148mm] bg-white text-black border-2 border-black box-border flex flex-col overflow-hidden relative"
         style={{ pageBreakAfter: 'always' }}
       >
-          {/* Top Edge Decorative Barcode Pattern */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 flex gap-1">
-            {[...Array(40)].map((_, i) => (
-              <div key={i} className="bg-stone-900 h-full" style={{ width: `${Math.random() * 8 + 1}px` }}></div>
-            ))}
-          </div>
-
-          <div className="border-b-2 border-stone-900 pb-4 mb-4 flex justify-between items-end">
-              <div>
-                  <h1 className="font-black text-2xl uppercase tracking-tighter leading-none text-stone-900">HARKAT</h1>
-                  <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-stone-500 mt-1">LOGISTICS</p>
-              </div>
-              <div className="text-right">
-                  <h2 className="font-mono font-bold text-xl text-stone-900">{order.orderNumber}</h2>
-                  <p className="text-[10px] text-stone-500 font-medium">DATE: {new Date(order.createdAt).toLocaleDateString('id-ID')}</p>
-              </div>
-          </div>
-
-          <div className="flex-1 space-y-5 overflow-hidden">
-              <div className="border-2 border-stone-900 p-3 rounded-none bg-stone-50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="bg-stone-900 text-white text-[8px] font-black px-1.5 py-0.5 rounded-sm">RECIPIENT</div>
-                  </div>
-                  <p className="font-black text-xl leading-tight uppercase text-stone-900 truncate">{order.customerName}</p>
-                  <p className="text-base font-bold text-stone-700 mt-1 mb-2">{order.customerPhone}</p>
-                  <div className="text-xs font-semibold leading-relaxed text-stone-800 h-16 overflow-hidden">
-                    {formatAddress(order.shippingAddress)}
-                  </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                  <div className="border border-stone-200 p-2 bg-stone-50">
-                      <p className="text-[8px] uppercase font-bold text-stone-400 mb-0.5">Shipping Method</p>
-                      <p className="font-black text-base uppercase text-stone-900">{order.shippingVendor || 'Standard'}</p>
-                  </div>
-                  <div className="border border-stone-200 p-2 bg-stone-50 text-right">
-                       <p className="text-[8px] uppercase font-bold text-stone-400 mb-0.5">Package Weight</p>
-                       <p className="font-black text-base text-stone-900">
-                        {order.finalWeight ? `${order.finalWeight.toFixed(1)} KG` : 'TBA'}
-                       </p>
-                  </div>
-              </div>
-
-              <div className="border-t border-stone-100 pt-3">
-                  <p className="text-[8px] uppercase font-bold text-stone-400 mb-2">Package Contents ({order.items.length} items)</p>
-                  <div className="space-y-1.5 max-h-32 overflow-hidden">
-                      {order.items.slice(0, 5).map((item: any) => (
-                          <div key={item.id} className="flex justify-between items-center text-[10px] font-semibold border-b border-stone-50 pb-1">
-                              <span className="truncate pr-4 text-stone-700">{item.productName}</span>
-                              <span className="bg-stone-100 px-1.5 py-0.5 rounded font-bold shrink-0">x{item.quantity}</span>
-                          </div>
-                      ))}
-                      {order.items.length > 5 && (
-                        <p className="text-[8px] text-stone-400 italic mt-1">+ {order.items.length - 5} more items...</p>
-                      )}
-                  </div>
-              </div>
-          </div>
-
-          <div className="mt-6 pt-4 border-t-2 border-stone-900">
-             <div className="flex justify-between items-center">
-               <div className="flex-1">
-                  <div className="flex gap-4 items-center mb-2">
-                    {/* QR Code (Internal) */}
-                    <div className="bg-white p-1 border border-stone-200">
-                       <QRCodeSVG value={order.id} size={50} level="M" />
-                    </div>
-                    
-                    {/* Linear Barcode (External API for visual) */}
-                    <div className="flex-1 h-12 flex items-center justify-center overflow-hidden">
-                       {/* Using a reliable free barcode API for Code 128 */}
-                       <img 
-                          src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${order.orderNumber}&scale=2&height=10&incltext=false`} 
-                          alt="Barcode" 
-                          className="h-full w-full object-contain opacity-90 grayscale"
-                       />
-                    </div>
-                  </div>
-                  <p className="text-[8px] font-mono text-center tracking-[0.4em] text-stone-400">ID: {order.id.toUpperCase()}</p>
-               </div>
-               <div className="w-24 text-center ml-4 shrink-0">
-                  <p className="text-[8px] font-black text-stone-400 mb-4">SIGNATURE</p>
-                  <div className="h-8 border-b-2 border-stone-200 w-full"></div>
-               </div>
+          {/* Header Section: Courier & Date */}
+          <div className="flex border-b-2 border-black h-[15%]">
+             <div className="w-1/3 border-r-2 border-black flex flex-col items-center justify-center p-2 bg-black text-white">
+                <h1 className="font-black text-lg leading-none tracking-tighter">HARKAT</h1>
+                <p className="text-[8px] tracking-widest font-medium mt-1">LOGISTICS</p>
              </div>
-             
-             <div className="flex justify-between mt-3 pt-3 border-t border-stone-100">
-                  <div className="text-left">
-                      <p className="text-[7px] font-bold text-stone-400">SENDER: HARKAT FURNITURE PREMIUM</p>
-                  </div>
-                  <div className="text-right">
-                      <p className="text-[7px] font-bold text-stone-400 text-right uppercase">Fragile / Handle with care</p>
-                  </div>
+             <div className="w-2/3 p-2 flex flex-col justify-center items-center">
+                <p className="font-black text-2xl uppercase tracking-tighter">{order.shippingVendor || 'TRUCKING'}</p>
+                <p className="text-[10px] font-bold mt-1 text-stone-600">STANDARD SERVICE</p>
+             </div>
+          </div>
+
+          {/* Route / Zip Code (Large Visual Identifier) */}
+          <div className="h-[12%] border-b-2 border-black flex items-center justify-center bg-stone-100/50">
+             <span className="font-black text-4xl tracking-[0.2em] font-mono">
+               {(() => {
+                  try {
+                    const json = JSON.parse(order.shippingAddress);
+                    // Extract first 3 digits of zip or just display a route code
+                    return json.zip ? json.zip.substring(0, 3) : 'JKT';
+                  } catch { return 'IDN'; }
+               })()}
+             </span>
+          </div>
+
+          {/* Recipient Section (Main Focus) */}
+          <div className="flex-1 p-3 flex flex-col justify-start border-b-2 border-black">
+             <div className="text-[9px] font-bold uppercase text-stone-500 mb-1">To (Penerima):</div>
+             <div className="font-black text-xl uppercase leading-tight mb-2 line-clamp-2">
+                {order.customerName}
+             </div>
+             <div className="text-sm font-bold mb-3">
+                {order.customerPhone}
+             </div>
+             <div className="text-xs font-semibold leading-snug line-clamp-5 overflow-hidden">
+                {formatAddress(order.shippingAddress)}
+             </div>
+          </div>
+
+          {/* Details Grid: Weight, Order No, Sender */}
+          <div className="h-[25%] flex border-b-2 border-black">
+             {/* Left: Sender & Weight */}
+             <div className="w-1/2 border-r-2 border-black flex flex-col">
+                <div className="flex-1 p-2 border-b-2 border-black">
+                   <p className="text-[8px] font-bold uppercase text-stone-500 mb-0.5">From (Pengirim):</p>
+                   <p className="font-bold text-xs">HARKAT FURNITURE</p>
+                   <p className="text-[9px] font-medium text-stone-600">0812-3456-7890</p>
+                </div>
+                <div className="h-8 flex items-center justify-between px-2 bg-stone-100">
+                   <span className="text-[9px] font-bold uppercase">Weight:</span>
+                   <span className="font-black text-sm">{order.finalWeight ? `${order.finalWeight.toFixed(1)} KG` : '1.0 KG'}</span>
+                </div>
+             </div>
+
+             {/* Right: Order Details */}
+             <div className="w-1/2 p-2 flex flex-col justify-center items-center text-center">
+                <p className="text-[8px] font-bold uppercase text-stone-500 mb-1">Order Number</p>
+                <p className="font-black text-lg font-mono mb-2">{order.orderNumber}</p>
+                <p className="text-[9px] font-medium">{new Date(order.createdAt).toLocaleDateString('id-ID')}</p>
+             </div>
+          </div>
+
+          {/* Footer: Barcodes */}
+          <div className="h-[18%] p-2 flex items-center justify-between gap-2">
+             <div className="h-full w-full flex flex-col items-center justify-center opacity-90">
+                 {/* Internal Order ID Barcode (Code 128) */}
+                <img 
+                   src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${order.orderNumber}&scale=2&height=10&incltext=false`} 
+                   alt="Barcode" 
+                   className="h-full w-auto max-w-full object-contain"
+                />
+                <p className="text-[8px] font-mono tracking-widest mt-1">{order.orderNumber}</p>
+             </div>
+             <div className="shrink-0">
+                <QRCodeSVG value={order.id} size={48} level="M" />
              </div>
           </div>
       </div>
@@ -202,10 +185,11 @@ export default function ShippingLabelPage({ params }: { params: Promise<{ id: st
             size: 105mm 148mm;
             margin: 0;
           }
-          body {
-            background: white !important;
+          html, body {
+            height: 100%;
             margin: 0 !important;
             padding: 0 !important;
+            background: white !important;
           }
           .print\\:hidden {
             display: none !important;
