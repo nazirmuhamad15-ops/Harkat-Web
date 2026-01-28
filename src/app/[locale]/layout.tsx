@@ -8,6 +8,7 @@ import { Noto_Sans, Playfair_Display } from "next/font/google"; // Use Noto Sans
 import "../globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/components/providers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -63,6 +64,7 @@ export default async function LocaleLayout({
             <Providers>
             {children}
             <Toaster />
+            <SpeedInsights />
             </Providers>
         </NextIntlClientProvider>
       </body>
