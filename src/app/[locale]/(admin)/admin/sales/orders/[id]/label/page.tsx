@@ -80,7 +80,6 @@ export default function ShippingLabelPage({ params }: { params: Promise<{ id: st
   )
 
   return (
-  return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-stone-100 p-8 sm:p-12 print:p-0 print:bg-white">
       <div className="mb-8 flex items-center justify-between w-[105mm] print:hidden">
         <Link href="/admin/sales/orders">
