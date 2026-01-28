@@ -687,22 +687,22 @@ export default function ProductsPage() {
       <div className="flex-1 flex flex-col min-h-0 border rounded-lg bg-white relative mx-3 mb-3">
           {/* Fixed Header */}
           <div className="bg-stone-50 border-b z-20 shrink-0">
-            <table className="w-full text-sm text-left">
+            <table className="w-full text-sm text-left table-fixed">
               <TableHeader>
                 <TableRow className="text-xs">
-                  <TableHead className="w-10 pl-4 py-3">
+                  <TableHead className="w-[50px] pl-4 py-3">
                     <Checkbox 
                       checked={selectedProducts.size === filteredProducts.length && filteredProducts.length > 0}
                       onCheckedChange={toggleSelectAll}
                     />
                   </TableHead>
-                  <TableHead className="font-semibold py-3">Produk</TableHead>
-                  <TableHead className="font-semibold py-3">SKU</TableHead>
-                  <TableHead className="font-semibold py-3">Kategori</TableHead>
-                  <TableHead className="font-semibold text-center py-3">Stok</TableHead>
-                  <TableHead className="font-semibold text-right py-3">Harga</TableHead>
-                  <TableHead className="font-semibold text-center py-3">Status</TableHead>
-                  <TableHead className="w-16 text-right pr-4 py-3">Aksi</TableHead>
+                  <TableHead className="w-[300px] font-semibold py-3">Produk</TableHead>
+                  <TableHead className="w-[120px] font-semibold py-3">SKU</TableHead>
+                  <TableHead className="w-[120px] font-semibold py-3">Kategori</TableHead>
+                  <TableHead className="w-[80px] font-semibold text-center py-3">Stok</TableHead>
+                  <TableHead className="w-[120px] font-semibold text-right py-3">Harga</TableHead>
+                  <TableHead className="w-[100px] font-semibold text-center py-3">Status</TableHead>
+                  <TableHead className="w-[60px] text-right pr-4 py-3">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
             </table>
@@ -710,7 +710,7 @@ export default function ProductsPage() {
 
           {/* Scrollable Body */}
           <div className="absolute inset-0 top-[45px] bottom-[52px] overflow-y-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full text-sm text-left table-fixed">
               <TableBody>
               {loading ? (
                 <TableRow>
@@ -737,14 +737,14 @@ export default function ProductsPage() {
                       key={product.id} 
                       className={`hover:bg-stone-50 ${selectedProducts.has(product.id) ? 'bg-blue-50' : ''}`}
                     >
-                      <TableCell className="pl-4">
+                      <TableCell className="w-[50px] pl-4">
                         <Checkbox 
                           checked={selectedProducts.has(product.id)}
                           onCheckedChange={() => toggleSelectProduct(product.id)}
                         />
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
+                      <TableCell className="w-[300px]">
+                        <div className="flex items-center gap-3 w-full">
                           <div className="h-10 w-10 bg-stone-100 rounded overflow-hidden shrink-0">
                             {images[0] ? (
                               <img src={images[0]} className="w-full h-full object-cover" />
@@ -754,33 +754,33 @@ export default function ProductsPage() {
                               </div>
                             )}
                           </div>
-                          <div>
-                            <p className="font-medium text-stone-900 flex items-center gap-1">
-                              {product.name}
-                              {product.featured && <Star className="w-3 h-3 fill-amber-400 text-amber-400" />}
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-stone-900 flex items-center gap-1 truncate" title={product.name}>
+                              <span className="truncate">{product.name}</span>
+                              {product.featured && <Star className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />}
                             </p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="font-mono text-xs text-stone-600">{v.sku || '-'}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-xs">{product.category}</Badge>
+                      <TableCell className="w-[120px] font-mono text-xs text-stone-600 truncate">{v.sku || '-'}</TableCell>
+                      <TableCell className="w-[120px]">
+                        <Badge variant="outline" className="text-xs truncate max-w-full block text-center">{product.category}</Badge>
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="w-[80px] text-center">
                         <div className={`font-semibold ${isLowStock ? 'text-amber-600' : 'text-stone-900'}`}>
                           {v.stockCount}
                           {isLowStock && <AlertTriangle className="w-3 h-3 inline ml-1" />}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="w-[120px] text-right font-medium">
                         Rp {v.price?.toLocaleString('id-ID')}
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Badge className={product.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-stone-100 text-stone-600'}>
+                      <TableCell className="w-[100px] text-center">
+                        <Badge className={`${product.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-stone-100 text-stone-600'} hover:bg-opacity-80`} variant="secondary">
                           {product.status === 'ACTIVE' ? 'Aktif' : 'Draft'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right pr-4">
+                      <TableCell className="w-[60px] text-right pr-4">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">

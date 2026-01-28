@@ -448,38 +448,38 @@ export default function ScraperPage() {
       </div>
 
       {/* Table */}
-      <div className="flex-1 overflow-auto p-4">
-        <div className="bg-white rounded-lg border">
+      <div className="flex-1 overflow-auto p-4 w-full">
+        <div className="bg-white rounded-lg border w-full">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-10">
+                <TableHead className="w-[50px]">
                   <Checkbox 
                     checked={selectedProducts.size === filteredProducts.length && filteredProducts.length > 0}
                     onCheckedChange={toggleSelectAll}
                   />
                 </TableHead>
-                <TableHead className="w-16">Image</TableHead>
-                <TableHead>Produk</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Detail</TableHead>
-                <TableHead className="text-right">Harga</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Tanggal</TableHead>
-                <TableHead className="text-right">Aksi</TableHead>
+                <TableHead className="w-[80px]">Image</TableHead>
+                <TableHead className="w-[200px] md:w-[300px]">Produk</TableHead>
+                <TableHead className="w-[100px]">Source</TableHead>
+                <TableHead className="w-[150px]">Detail</TableHead>
+                <TableHead className="text-right w-[120px]">Harga</TableHead>
+                <TableHead className="text-center w-[100px]">Status</TableHead>
+                <TableHead className="text-center w-[100px]">Tanggal</TableHead>
+                <TableHead className="text-right w-[80px]">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center">
+                  <TableCell colSpan={9} className="h-24 text-center">
                     <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2" />
                     Loading...
                   </TableCell>
                 </TableRow>
               ) : filteredProducts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-24 text-center text-stone-500">
+                  <TableCell colSpan={9} className="h-24 text-center text-stone-500">
                     <Package className="w-12 h-12 mx-auto mb-2 opacity-20" />
                     Tidak ada produk. Install extension dan mulai scraping!
                   </TableCell>
@@ -494,11 +494,11 @@ export default function ScraperPage() {
                       />
                     </TableCell>
                     <TableCell>
-                      <div className="relative w-12 h-12 bg-stone-100 rounded overflow-hidden group">
+                      <div className="relative w-12 h-12 bg-stone-100 rounded overflow-hidden group shrink-0">
                         {product.images?.[0] ? (
                           <img
                             src={product.images[0]}
-                            alt={product.name}
+                            alt={JSON.stringify(product.name)}
                             className="w-full h-full object-cover"
                             referrerPolicy="no-referrer"
                             crossOrigin="anonymous"
@@ -519,8 +519,8 @@ export default function ScraperPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="max-w-[300px]">
-                        <p className="font-medium text-stone-900 truncate">{product.name}</p>
+                      <div className="max-w-[200px] md:max-w-[280px]">
+                        <p className="font-medium text-stone-900 truncate" title={product.name}>{product.name}</p>
                         {product.sourceUrl && (
                           <a
                             href={product.sourceUrl}
@@ -534,40 +534,46 @@ export default function ScraperPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={SOURCE_COLORS[product.source] || 'bg-gray-100'}>
+                      <Badge className={SOURCE_COLORS[product.source] || 'bg-gray-100'} variant="secondary">
                         {SOURCE_ICONS[product.source]} {product.source}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {product.variants && (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 0 ? (
-                        <div className="flex flex-col gap-1">
-                          {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).map((v: any, i: number) => (
-                             <span key={i} className="text-[10px] bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded w-fit">
-                                {v.name}: {v.options?.length} opsi
-                             </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-xs text-stone-400">-</span>
-                      )}
+                      <div className="max-w-[150px] overflow-hidden text-xs">
+                        {product.variants && (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 0 ? (
+                          <div className="flex flex-col gap-1">
+                            {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).slice(0, 2).map((v: any, i: number) => (
+                               <span key={i} className="bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded w-fit truncate max-w-full" title={`${v.name}: ${v.options?.length} opsi`}>
+                                  {v.name}: {v.options?.length} opsi
+                               </span>
+                            ))}
+                            {(Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string || '[]')).length > 2 && (
+                                <span className="text-stone-400 text-[10px]">+ more</span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-stone-400">-</span>
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell className="text-right font-medium">
+                    <TableCell className="text-right font-medium text-sm whitespace-nowrap">
                       {product.price ? `Rp ${product.price.toLocaleString('id-ID')}` : '-'}
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge
+                        variant="secondary"
                         className={
                           product.status === 'PENDING'
-                            ? 'bg-yellow-100 text-yellow-700'
+                            ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-100'
                             : product.status === 'IMPORTED'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-red-100 text-red-700'
+                            ? 'bg-green-100 text-green-700 hover:bg-green-100'
+                            : 'bg-red-100 text-red-700 hover:bg-red-100'
                         }
                       >
                         {product.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-center text-sm text-stone-500">
+                    <TableCell className="text-center text-xs text-stone-500 whitespace-nowrap">
                       {new Date(product.scrapedAt).toLocaleDateString('id-ID')}
                     </TableCell>
                     <TableCell className="text-right">

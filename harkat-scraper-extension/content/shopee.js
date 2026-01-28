@@ -83,10 +83,38 @@ async function scrapeAllProducts() {
       return { success: false, error: 'Tidak ada produk ditemukan. Coba scroll dulu atau buka halaman lain.' };
     }
 
+    // Filter out products located ABOVE the "Kategori" sidebar section
+    let minTopPosition = 0;
+    
+    // Find the "Kategori" header element in sidebar
+    const allDivs = document.querySelectorAll('div, h2, h3, h4, span');
+    for (const el of allDivs) {
+      // Check for exact match or close match for typical sidebar header
+      if (el.innerText?.trim() === 'Kategori' && el.offsetWidth > 0 && el.offsetHeight > 0) {
+         // Check if it looks like a sidebar header (left side)
+         const rect = el.getBoundingClientRect();
+         if (rect.left < window.innerWidth * 0.4) { // Must be on the left side
+             minTopPosition = rect.top + (window.pageYOffset || document.documentElement.scrollTop) - 100; // Small buffer
+             console.log('Harkat Scraper: Found Category boundary at:', minTopPosition);
+             break; 
+         }
+      }
+    }
+
     const products = [];
     
     for (const card of productCards) {
       try {
+        // Check vertical position
+        const cardRect = card.getBoundingClientRect();
+        const cardAbsTop = cardRect.top + (window.pageYOffset || document.documentElement.scrollTop);
+        
+        // Skip if product is above the Category section (e.g. Top Picks, Ads)
+        if (minTopPosition > 0 && cardAbsTop < minTopPosition) {
+            console.log('Harkat Scraper: Skipped item above category:', cardAbsTop);
+            continue;
+        }
+
         const link = card.querySelector('a[href*="-i."]') || card.querySelector('a');
         const imgEl = card.querySelector('img');
         
@@ -106,20 +134,47 @@ async function scrapeAllProducts() {
           name = lines[0] || '';
         }
         
-        // Get price
+        // Get price - Improved Regex & Selector
         let price = null;
-        const priceText = card.innerText || '';
-        const priceMatch = priceText.match(/Rp([\d.]+)/);
-        if (priceMatch) {
-          price = parseInt(priceMatch[1].replace(/\./g, ''));
+        
+        // Strategy 1: Look for specific price elements first (more accurate)
+        const priceEl = card.querySelector('[class*="price"], span[class*="text-"], div[class*="text-"]');
+        if (priceEl && priceEl.innerText.includes('Rp')) {
+             const specificText = priceEl.innerText;
+             const pMatch = specificText.match(/Rp\s*([\d.]+)/); // Handle optional space
+             if (pMatch) price = parseInt(pMatch[1].replace(/\./g, ''));
+        }
+
+        // Strategy 2: Fallback to card text regex if strategy 1 failed
+        if (!price) {
+            const priceText = card.innerText || '';
+            const priceMatch = priceText.match(/Rp\s*([\d.]+)/); // Handle optional space
+            if (priceMatch) {
+              price = parseInt(priceMatch[1].replace(/\./g, ''));
+            }
         }
         
-        // Get image - prefer larger image
+        // Get image - Improved lazy load handling
         let imageUrl = '';
         if (imgEl) {
-          imageUrl = imgEl.src || imgEl.dataset?.src || '';
-          // Remove thumbnail suffix to get larger image
-          imageUrl = imageUrl.replace(/_tn(\.\w+)?$/, '$1');
+          // Check standard src first, then data attributes
+          imageUrl = imgEl.src || imgEl.getAttribute('data-src') || '';
+          
+          // Handle lazy load placeholder
+          if (imageUrl.includes('data:image') || imageUrl.includes('placeholder')) {
+              // Try finding background image if img src is placeholder
+              const bgDiv = card.querySelector('div[style*="background-image"]');
+              if (bgDiv) {
+                  const style = bgDiv.getAttribute('style');
+                  const urlMatch = style.match(/url\(['"]?(.*?)['"]?\)/);
+                  if (urlMatch) imageUrl = urlMatch[1];
+              }
+          }
+          
+          // Clean URL
+          if (imageUrl) {
+              imageUrl = imageUrl.replace(/_tn(\.\w+)?$/, '$1'); // Get full size
+          }
         }
         
         if (name && link) {
@@ -137,8 +192,9 @@ async function scrapeAllProducts() {
     }
 
     if (products.length === 0) {
-      return { success: false, error: 'Gagal extract data produk' };
+      return { success: false, error: 'Gagal extract data produk (Hanya Judul yang ditemukan?). Coba scroll ke bawah agar gambar termuat.' };
     }
+
 
     return { success: true, data: products };
   } catch (error) {
@@ -453,51 +509,81 @@ function getCategory() {
 function getVariants() {
   const variants = [];
   
-  // Strategy 1: Look for standard Shopee variant sections
-  // Usually rows with label and buttons
-  const rows = document.querySelectorAll('.flex.items-center, .flex.flex-col'); // Shopee naming varies
+  // Strategy 1: Look for rows that look like variant selectors (Label on left, Buttons on right)
+  // Shopee uses specific flex structures. Let's find containers that have buttons.
+  const allButtons = document.querySelectorAll('button');
+  const candidateContainers = new Set();
   
-  rows.forEach(row => {
-    // Check if this row is a variant selector
-    const labelEl = row.querySelector('label') || row.querySelector('.text-gray-500, .text-stone-500');
-    if (!labelEl) return;
-    
-    // Check label text (Warna, Ukuran, Variasi, Model, dll)
-    const labelText = labelEl.textContent?.trim() || '';
-    if (!/Warna|Color|Variasi|Model|Ukuran|Size/i.test(labelText)) return;
-    
-    // Find options
-    // Options are usually buttons
-    const buttons = row.querySelectorAll('button');
+  allButtons.forEach(btn => {
+      // Find the row container for this button
+      let parent = btn.parentElement;
+      for(let i=0; i<3; i++) { // Go up a few levels to find the row wrapper
+          if (parent) {
+             const style = window.getComputedStyle(parent);
+             // Look for flex containers with buttons
+             if (style.display === 'flex' || style.display === 'grid') {
+                 candidateContainers.add(parent);
+             }
+             parent = parent.parentElement;
+          }
+      }
+  });
+
+  candidateContainers.forEach(row => {
+      // 1. Check if this container has a Label sibling or child acting as label
+      // Usually the hierarchy is:  [Label] [Container of Buttons] OR [Row [Label] [ButtonsWrapper]]
+      
+      let labelText = '';
+      
+      // Check for Preceding Sibling Label (common in grid layouts)
+      let sibling = row.previousElementSibling;
+      if (sibling && (sibling.tagName === 'LABEL' || sibling.innerText.length < 30)) {
+           labelText = sibling.innerText?.trim();
+      }
+      
+      // If not found, check Parent's first child (Flex row layout)
+      if (!labelText && row.parentElement) {
+           const parentRow = row.parentElement;
+           const firstChild = parentRow.firstElementChild;
+           // If the row contains "Kuantitas" or "Quantity", ignore it immediately
+           if (parentRow.innerText?.includes('Kuantitas') || parentRow.innerText?.includes('Quantity')) return;
+           
+           if (firstChild && firstChild !== row && firstChild.innerText.length < 30) {
+               labelText = firstChild.innerText?.trim();
+           }
+      }
+
+      if (!labelText) return; // No label found, unsafe to assume it's a variant
+
+      // 2. Filter out non-variant info rows
+      if (/Kuantitas|Quantity|Stok|Stock|Pengiriman|Shipping|Jaminan|Ongkos|Voucher|Cicilan/i.test(labelText)) return;
+      
+      // 3. Extract Options from Buttons in this row
     const options = [];
+    const buttons = row.querySelectorAll('button');
     
     buttons.forEach(btn => {
-      // Exclude disabled if needed, but for now grab all
-      const text = btn.textContent?.trim() || btn.getAttribute('aria-label');
-      if (text && !options.includes(text)) {
-        options.push(text);
+      // Get text content
+      let text = btn.innerText?.trim() || btn.getAttribute('aria-label');
+      
+      // If button has text, add it
+      if (text) {
+          // Clean up formatting (e.g. remove "Selected" suffix if any)
+          text = text.replace(/[\n\r]+/g, ' ').trim();
+          if (!options.includes(text)) {
+            options.push(text);
+          }
       }
     });
 
     if (options.length > 0) {
-      variants.push({ name: labelText, options });
+      // Check if we already have this variant group
+      const exists = variants.find(v => v.name === labelText);
+      if (!exists) {
+          variants.push({ name: labelText, options });
+      }
     }
   });
-
-  // Strategy 2: Fallback for generic structure
-  if (variants.length === 0) {
-     const sections = document.querySelectorAll('section');
-     sections.forEach(sec => {
-        const title = sec.querySelector('h3, h4')?.innerText;
-        if (/Warna|Variasi/i.test(title)) {
-           const opts = [];
-           sec.querySelectorAll('button, div[role="button"]').forEach(b => {
-             if(b.innerText) opts.push(b.innerText);
-           });
-           if(opts.length > 0) variants.push({ name: 'Warna', options: opts });
-        }
-     });
-  }
 
   return variants;
 }
