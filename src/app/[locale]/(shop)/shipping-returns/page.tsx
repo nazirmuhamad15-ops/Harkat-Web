@@ -16,7 +16,7 @@ export default function ShippingReturnsPage() {
                     Kami menggunakan armada internal Harkat Furniture untuk seluruh pengiriman guna menjamin keamanan produk. Khusus untuk radius 30km pertama dari workshop kami, pengiriman tersedia secara GRATIS.
                 </p>
                 <ul className="list-disc list-inside text-sm text-stone-600 space-y-1">
-                    <li>Radius < 30km: GRATIS (1-3 Hari)</li>
+                    <li>Radius &lt; 30km: GRATIS (1-3 Hari)</li>
                     <li>Luar Radius 30km: Biaya disesuaikan (3-7 Hari)</li>
                     <li>Pengiriman oleh tim internal kami</li>
                 </ul>
