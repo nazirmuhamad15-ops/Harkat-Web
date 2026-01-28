@@ -609,6 +609,12 @@ function getVariants() {
       return legacyGetVariants();
   }
   
+  // FAILSAFE: If Anchor logic found nothing, try Legacy
+  if (variants.length === 0) {
+      console.log("Anchor logic returned 0 variants, trying legacy...");
+      return legacyGetVariants();
+  }
+
   return variants;
 }
 
