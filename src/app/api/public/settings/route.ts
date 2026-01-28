@@ -22,6 +22,9 @@ export async function GET() {
                 settings['site_email'] = parsed.email
                 settings['site_whatsapp'] = parsed.phone
                 settings['site_address'] = parsed.address
+                settings['site_city'] = parsed.city
+                settings['site_province'] = parsed.province
+                settings['site_postal_code'] = parsed.postalCode
             }
             
             settings[item.key] = parsed
