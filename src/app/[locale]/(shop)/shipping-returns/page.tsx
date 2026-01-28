@@ -13,12 +13,12 @@ export default function ShippingReturnsPage() {
                 <Truck className="w-8 h-8 text-[#0058AB] mb-4" />
                 <h3 className="text-xl font-bold mb-2">Metode Pengiriman</h3>
                 <p className="text-stone-600 text-sm leading-relaxed mb-4">
-                    Kami menggunakan armada internal untuk area JABODETABEK untuk menjamin keamanan produk. Untuk luar kota, kami bekerjasama dengan mitra logistik kargo terpercaya.
+                    Kami menggunakan armada internal Harkat Furniture untuk seluruh pengiriman guna menjamin keamanan produk. Khusus untuk radius 30km pertama dari workshop kami, pengiriman tersedia secara GRATIS.
                 </p>
                 <ul className="list-disc list-inside text-sm text-stone-600 space-y-1">
-                    <li>JABODETABEK: 3-5 Hari Kerja</li>
-                    <li>Pulau Jawa: 5-7 Hari Kerja</li>
-                    <li>Luar Jawa: 7-14 Hari Kerja</li>
+                    <li>Radius < 30km: GRATIS (1-3 Hari)</li>
+                    <li>Luar Radius 30km: Biaya disesuaikan (3-7 Hari)</li>
+                    <li>Pengiriman oleh tim internal kami</li>
                 </ul>
             </div>
             <div className="p-6 bg-[#f5f5f5] rounded-xl">
@@ -40,13 +40,13 @@ export default function ShippingReturnsPage() {
           <AccordionItem value="item-1">
             <AccordionTrigger>Berapa biaya pengiriman ke lokasi saya?</AccordionTrigger>
             <AccordionContent>
-              Biaya pengiriman dihitung berdasarkan berat volumetrik dan lokasi tujuan. Anda dapat melihat estimasi ongkir di halaman Checkout sebelum melakukan pembayaran. Untuk area tertentu di JABODETABEK, kami sering mengadakan promo gratis ongkir.
+              Biaya pengiriman dihitung berdasarkan jarak lokasi tujuan. Kami memberikan fasilitas GRATIS ONGKIR untuk pengiriman dalam radius 30km pertama dari workshop kami menggunakan armada internal.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
             <AccordionTrigger>Apakah bisa dikirim ke luar pulau?</AccordionTrigger>
             <AccordionContent>
-              Ya, Harkat Furniture melayani pengiriman ke seluruh Indonesia menggunakan ekspedisi kargo rekanan kami. Pastikan alamat lengkap agar kurir dapat menjangkau lokasi Anda.
+              Harkat Furniture melayani pengiriman ke berbagai wilayah yang terjangkau oleh armada internal kami. Kami memastikan setiap barang diantar sendiri oleh tim kami untuk menjamin keamanan hingga sampai di lokasi Anda.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
@@ -58,7 +58,7 @@ export default function ShippingReturnsPage() {
           <AccordionItem value="item-4">
             <AccordionTrigger>Apakah kurir akan membantu merakit furniture?</AccordionTrigger>
             <AccordionContent>
-              Untuk pengiriman dengan armada internal kami (area JABODETABEK), tim kami dapat membantu perakitan ringan. Untuk pengiriman via kargo, barang dikirim dalam bentuk flat-pack (belum dirakit) namun disertai instruksi perakitan yang mudah dipahami.
+              Karena kami menggunakan armada internal, tim kami akan membantu perakitan produk di lokasi Anda (khusus untuk produk yang memerlukan perakitan). Anda tidak perlu khawatir mengenai instruksi perakitan yang rumit.
             </AccordionContent>
           </AccordionItem>
         </Accordion>

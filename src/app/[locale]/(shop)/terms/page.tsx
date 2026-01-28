@@ -54,7 +54,7 @@ export default function TermsPage() {
             <section>
                 <h2 className="text-xl font-bold text-stone-900 mb-3">4. Pengiriman</h2>
                 <p>
-                    Biaya pengiriman dihitung berdasarkan lokasi dan berat/volume barang. Estimasi waktu pengiriman yang diberikan hanyalah perkiraan dan tidak menjamin tanggal pasti kedatangan, terutama untuk pengiriman luar kota yang menggunakan pihak ketiga (Logistik Kargo).
+                    Biaya pengiriman dihitung berdasarkan lokasi dan jarak pengiriman. Nikmati pengiriman GRATIS untuk radius 30km pertama dari workshop kami menggunakan armada internal. Estimasi waktu pengiriman yang diberikan hanyalah perkiraan dan pengiriman dilakukan langsung oleh tim kami untuk menjamin keamanan produk.
                 </p>
             </section>
 
