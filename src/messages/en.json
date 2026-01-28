@@ -49,7 +49,12 @@
   "Home": {
     "promo": {
       "title": "CHEAP PROMO",
-      "subtitle": "Up to 50% discount on functional furniture & home furnishings"
+      "subtitle": "Up to 50% discount on functional furniture & home furnishings",
+      "validity": "08 Jan 2026 - 05 Apr 2026 or while stocks last"
+    },
+    "category": {
+      "title": "Shop by Category",
+      "subtitle": "Find the right furniture for every room"
     },
     "values": {
       "shipping": {
@@ -78,7 +83,20 @@
       "addToCart": "Add to Cart",
       "bestseller": "Best Seller",
       "save": "Save",
-      "oldPrice": "Old:"
+      "oldPrice": "Was:"
+    },
+    "products": {
+      "title": "All Products",
+      "searchPlaceholder": "Search products...",
+      "category": "Category",
+      "allCategories": "All Categories",
+      "sortBy": "Sort by",
+      "sortBestseller": "Best Selling",
+      "sortPriceLow": "Price: Low to High",
+      "sortPriceHigh": "Price: High to Low",
+      "sortName": "Name (A-Z)",
+      "notFound": "Products not found",
+      "notFoundDesc": "Try other keywords or change category filter."
     }
   }
 }

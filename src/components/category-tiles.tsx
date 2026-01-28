@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface Category {
   name: string
@@ -63,15 +64,17 @@ function CategoryTile({ category }: { category: Category }) {
 }
 
 export function CategoryTiles({ categories }: CategoryTilesProps) {
+  const t = useTranslations('Home')
+  
   return (
     <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-8">
           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Belanja berdasarkan kategori
+            {t('category.title')}
           </h3>
           <p className="text-gray-600">
-            Temukan furniture yang tepat untuk setiap ruangan
+            {t('category.subtitle')}
           </p>
         </div>
         

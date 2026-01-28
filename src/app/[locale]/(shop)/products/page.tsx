@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useCart } from '@/hooks/use-cart'
 import { toast } from 'sonner'
 import { DiscountBadge } from '@/components/discount-badge'
+import { useTranslations } from 'next-intl'
 
 interface Product {
   id: string
@@ -43,6 +44,7 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState('bestseller')
   
   const cart = useCart()
+  const t = useTranslations('Home')
 
   useEffect(() => {
     fetchProducts()
@@ -158,7 +160,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-neutral-50 font-sans text-stone-900 pb-20">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold text-[#0058A3] mb-8">Semua Produk</h1>
+        <h1 className="text-4xl font-bold text-[#0058A3] mb-8">{t('products.title')}</h1>
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-center justify-between">
@@ -166,7 +168,7 @@ export default function ProductsPage() {
                  <div className="relative w-full md:w-80">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
-                        placeholder="Cari produk..."
+                        placeholder={t('products.searchPlaceholder')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10 rounded-full border-stone-200"
@@ -174,10 +176,10 @@ export default function ProductsPage() {
                 </div>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                     <SelectTrigger className="w-[180px] rounded-full">
-                        <SelectValue placeholder="Kategori" />
+                        <SelectValue placeholder={t('products.category')} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">Semua Kategori</SelectItem>
+                        <SelectItem value="all">{t('products.allCategories')}</SelectItem>
                         {categories.filter(cat => cat !== 'all').map(category => (
                             <SelectItem key={category} value={category}>{category}</SelectItem>
                         ))}
@@ -187,13 +189,13 @@ export default function ProductsPage() {
             
             <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[180px] rounded-full">
-                    <SelectValue placeholder="Urutan" />
+                    <SelectValue placeholder={t('products.sortBy')} />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="bestseller">Paling Laris</SelectItem>
-                    <SelectItem value="price-low">Harga Terendah</SelectItem>
-                    <SelectItem value="price-high">Harga Tertinggi</SelectItem>
-                    <SelectItem value="name">Nama (A-Z)</SelectItem>
+                    <SelectItem value="bestseller">{t('products.sortBestseller')}</SelectItem>
+                    <SelectItem value="price-low">{t('products.sortPriceLow')}</SelectItem>
+                    <SelectItem value="price-high">{t('products.sortPriceHigh')}</SelectItem>
+                    <SelectItem value="name">{t('products.sortName')}</SelectItem>
                 </SelectContent>
             </Select>
         </div>
@@ -204,8 +206,8 @@ export default function ProductsPage() {
                 <div className="inline-block p-4 rounded-full bg-stone-100 mb-4">
                     <Search className="w-8 h-8 text-stone-400" />
                 </div>
-                <h3 className="text-lg font-medium text-stone-900">Produk tidak ditemukan</h3>
-                <p className="text-stone-500">Coba kata kunci lain atau ubah filter kategori.</p>
+                <h3 className="text-lg font-medium text-stone-900">{t('products.notFound')}</h3>
+                <p className="text-stone-500">{t('products.notFoundDesc')}</p>
             </div>
         ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-8">
@@ -232,7 +234,7 @@ export default function ProductsPage() {
                                        <DiscountBadge percentage={discount} className="shadow-none rounded-sm bg-[#E00751] px-2 py-1 text-[11px]" />
                                     )}
                                     {product.featured && (
-                                        <span className="bg-[#FFDB00] text-black font-bold px-2 py-1 text-[11px] uppercase tracking-wider">Terlaris</span>
+                                        <span className="bg-[#FFDB00] text-black font-bold px-2 py-1 text-[11px] uppercase tracking-wider">{t('product.bestseller')}</span>
                                     )}
                                 </div>
 
@@ -261,7 +263,7 @@ export default function ProductsPage() {
                                     {product.comparePrice && (
                                          <div className="flex items-center gap-2">
                                             <span className="text-[11px] font-bold text-white bg-[#E00751] px-1.5 py-0.5">
-                                                 Hemat {formatPrice(product.comparePrice - product.price)}
+                                                 {t('product.save')} {formatPrice(product.comparePrice - product.price)}
                                             </span>
                                          </div>
                                     )}
@@ -273,7 +275,7 @@ export default function ProductsPage() {
                                     </div>
                                      {product.comparePrice && (
                                         <div className="text-[11px] text-stone-500">
-                                            Lama: <span className="line-through">{formatPrice(product.comparePrice)}</span>
+                                            {t('product.oldPrice')} <span className="line-through">{formatPrice(product.comparePrice)}</span>
                                         </div>
                                     )}
                                 </div>

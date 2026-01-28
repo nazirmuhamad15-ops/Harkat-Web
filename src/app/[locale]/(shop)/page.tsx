@@ -46,7 +46,7 @@ export default async function Home(props: HomeProps) {
         <PromotionalBanner 
           title={t('promo.title')}
           subtitle={t('promo.subtitle')}
-          validityPeriod="08 Jan 2026 - 05 Apr 2026 atau selama persediaan masih ada"
+          validityPeriod={t('promo.validity')}
         />
 
         {/* Category Tiles - Server Rendered */}
