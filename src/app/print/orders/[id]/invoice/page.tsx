@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Printer, ArrowLeft, Download, Package, MapPin, Phone, StickyNote } from 'lucide-react'
+import { Printer, ArrowLeft, Download, Package, MapPin, Phone, StickyNote, Mail } from 'lucide-react'
 import Link from 'next/link'
 
 interface OrderItem {
@@ -16,25 +16,35 @@ interface OrderItem {
 export default function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const [order, setOrder] = useState<any>(null)
+  const [store, setStore] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [errorDetails, setErrorDetails] = useState<string | null>(null)
   const [printMode, setPrintMode] = useState<'invoice' | 'label'>('invoice')
 
   useEffect(() => {
-    fetchOrder()
+    fetchData()
   }, [id])
 
-  const fetchOrder = async () => {
+  const fetchData = async () => {
     try {
-      const res = await fetch(`/api/admin/orders/${id}`)
-      if (res.ok) {
-        const data = await res.json()
+      const [resOrder, resSettings] = await Promise.all([
+        fetch(`/api/admin/orders/${id}`),
+        fetch(`/api/admin/settings`)
+      ])
+
+      if (resOrder.ok) {
+        const data = await resOrder.json()
         setOrder(data.order)
       } else {
-        const err = await res.text()
-        console.error('Fetch Error:', res.status, err)
-        setErrorDetails(`Error ${res.status}: ${err}`)
+        const err = await resOrder.text()
+        setErrorDetails(`Error ${resOrder.status}: ${err}`)
       }
+
+      if (resSettings.ok) {
+         const dataS = await resSettings.json()
+         setStore(dataS.settings?.store)
+      }
+
     } catch (e: any) {
       console.error(e)
       setErrorDetails(e.message)
@@ -45,7 +55,6 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
 
   const handlePrint = (mode: 'invoice' | 'label') => {
     setPrintMode(mode)
-    // Wait for render update then print
     setTimeout(() => {
         window.print()
     }, 300)
@@ -68,7 +77,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
   }
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-50">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 font-sans">
       <div className="flex flex-col items-center gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-900"></div>
         <p className="text-stone-600 font-medium animate-pulse">Memuat Data Invoice...</p>
@@ -77,7 +86,7 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
   )
 
   if (!order) return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-50 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 p-6 font-sans">
       <div className="bg-white p-8 rounded-xl border border-stone-200 shadow-sm max-w-md w-full text-center">
         <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <Package className="w-6 h-6 text-red-500" />
@@ -92,6 +101,13 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
   )
 
   const address = getAddressParts(order.shippingAddress)
+  const storeName = store?.name || 'Harkat Furniture'
+  const storeAddr = store?.address || 'Jl. Raya Parung No. 123'
+  const storeCity = store?.city || 'Bogor'
+  const storeProv = store?.province || 'Jawa Barat'
+  const storeZip = store?.postalCode || '16610'
+  const storePhone = store?.phone || '+62 812 3456 7890'
+  const storeEmail = store?.email || 'admin@harkatfurniture.web.id'
 
   return (
     <div className="min-h-screen bg-stone-100 p-6 sm:p-12 print:p-0 print:bg-white flex flex-col items-center font-sans text-stone-900">
@@ -151,14 +167,15 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
             {/* Header */}
             <div className="flex justify-between items-start border-b-2 border-stone-900 pb-8 mb-8">
                 <div>
-                   <h1 className="text-4xl font-black tracking-tight text-stone-900 mb-1">HARKAT</h1>
-                   <p className="text-xs font-bold tracking-[0.3em] text-stone-500 uppercase">Furniture Premium</p>
+                   <h1 className="text-4xl font-black tracking-tight text-stone-900 mb-1 uppercase">{storeName}</h1>
+                   <p className="text-xs font-bold tracking-[0.3em] text-stone-500 uppercase">Premium Furniture</p>
                    
                    <div className="mt-6 text-sm text-stone-600 space-y-1">
-                       <p className="font-medium text-stone-900">Harkat Furniture Store</p>
-                       <p>Jl. Raya Parung No. 123</p>
-                       <p>Bogor, Jawa Barat, 16610</p>
-                       <p>+62 812 3456 7890</p>
+                       <p className="font-bold text-stone-900">{storeName} Store</p>
+                       <p>{storeAddr}</p>
+                       <p>{storeCity}, {storeProv}, {storeZip}</p>
+                       <p>{storePhone}</p>
+                       <p className="text-xs text-stone-400">{storeEmail}</p>
                    </div>
                 </div>
                 <div className="text-right">
@@ -234,10 +251,10 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
             <div className="mt-8 border-t-2 border-stone-900 pt-8 flex flex-col sm:flex-row justify-between items-start gap-12">
                 <div className="max-w-sm">
                     <h4 className="text-xs font-bold uppercase text-stone-900 mb-2">Notes & Terms</h4>
-                    <p className="text-[10px] text-stone-500 leading-relaxed text-justify">
-                        Goods received in good condition. Returns accepted within 7 days with original packaging. 
-                        Warranty void if damage caused by improper assembly or user negligence. 
-                        Thank you for your business!
+                    <p className="text-[10px] text-stone-500 leading-relaxed text-justify italic">
+                        Terima kasih telah berbelanja di {storeName} (UMKM Indonesia).
+                        Barang yang sudah dibeli dan diterima dalam kondisi baik tidak dapat dikembalikan atau ditukar. 
+                        Kerusakan akibat kesalahan pemakaian/perakitan mandiri bukan tanggung jawab kami.
                     </p>
                     <div className="mt-8">
                          <p className="text-[10px] uppercase font-bold text-stone-400 mb-6">Authorized Signature</p>
@@ -266,16 +283,16 @@ export default function InvoicePage({ params }: { params: Promise<{ id: string }
 
       {/* --- A6 LABEL TEMPLATE --- */}
       <div 
-        className={`w-[105mm] h-[148mm] bg-white border border-stone-200 shadow-xl print:shadow-none print:border-none print:w-full print:h-full p-6 flex flex-col justify-between relative overflow-hidden transition-all duration-300 ${printMode === 'invoice' ? 'hidden print:hidden' : 'block print:block'}`}
+        className={`w-[105mm] h-[148mm] bg-white border border-stone-200 shadow-xl print:shadow-none print:border-none print:w-full print:h-full p-6 flex flex-col justify-between relative overflow-hidden transition-all duration-300 font-sans ${printMode === 'invoice' ? 'hidden print:hidden' : 'block print:block'}`}
       >
          {/* Sender (Top) */}
          <div className="border-b-2 border-stone-900 pb-3 mb-4">
              <div className="flex items-center gap-2 mb-1">
                 <Package className="w-4 h-4 text-stone-900" />
-                <p className="text-xs font-black uppercase tracking-wider">Harkat Furniture</p>
+                <p className="text-xs font-black uppercase tracking-wider">{storeName} LOGISTICS</p>
              </div>
              <p className="text-[10px] text-stone-600 leading-tight w-3/4">
-                 Jl. Raya Parung No. 123, Bogor, Jawa Barat 16610 (0812-3456-7890)
+                 {storeAddr}, {storeCity} {storeZip} ({storePhone})
              </p>
          </div>
 
