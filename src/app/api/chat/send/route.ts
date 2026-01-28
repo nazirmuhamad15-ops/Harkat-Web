@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { conversations, messages } from '@/db/schema'
 import { createId } from '@paralleldrive/cuid2'
-import { eq } from 'drizzle-orm'
+import { eq, and, gt, sql } from 'drizzle-orm'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 // Initialize Gemini
@@ -18,6 +18,30 @@ export async function POST(req: NextRequest) {
 
     if (!conversationId || !content) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    // Rate Limit: Max 10 messages per minute per conversation
+    const oneMinuteAgo = new Date(Date.now() - 60 * 1000)
+    const recentMessages = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(messages)
+      .where(
+         and(
+            eq(messages.conversationId, conversationId),
+            eq(messages.sender, 'USER'),
+            gt(messages.createdAt, oneMinuteAgo)
+         )
+      )
+
+    const msgCount = Number(recentMessages[0]?.count || 0)
+    if (msgCount >= 10) {
+        return NextResponse.json(
+            { 
+               error: 'Rate limit exceeded', 
+               message: 'Anda mengirim pesan terlalu cepat. Mohon tunggu 1 menit.' 
+            }, 
+            { status: 429 }
+        )
     }
 
     // 1. Save User Message
