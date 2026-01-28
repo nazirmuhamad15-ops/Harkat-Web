@@ -301,13 +301,24 @@ export default function ScraperPage() {
       if (tMatch) height = tMatch[1];
     }
 
-    // Extract colors
+    // Extract colors or generic variants
     let initialColors = '';
     try {
         const variants = product.variants ? (Array.isArray(product.variants) ? product.variants : JSON.parse(product.variants as unknown as string)) : [];
-        const colorVariant = variants.find((v: any) => /Warna|Color|Variasi/i.test(v.name));
-        if (colorVariant?.options) initialColors = colorVariant.options.join(', ');
-    } catch (e) {}
+        if (variants.length > 0) {
+            // Prioritize Color/Warna variants
+            const colorVariant = variants.find((v: any) => /Warna|Color|Variasi/i.test(v.name));
+            if (colorVariant?.options) {
+                initialColors = colorVariant.options.join(', ');
+            } else {
+                // If no color variant found, take the first variant available (e.g. "Ukuran", "Daun Pintu")
+                // This ensures we populate the variants field with something relevant
+                initialColors = variants[0].options?.join(', ') || '';
+            }
+        }
+    } catch (e) {
+        console.error('Error parsing variants for import dialog:', e);
+    }
 
     setEditData({
       name: product.name,
@@ -315,6 +326,7 @@ export default function ScraperPage() {
       price: product.price?.toString() || '',
       categoryId: matchedCategory?.id || '',
       stockCount: '10',
+      colors: initialColors,
       weight: '10', // Default
       length,
       width,
