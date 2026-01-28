@@ -280,25 +280,58 @@ export default function ScraperPage() {
       product.category?.toLowerCase().includes(c.name.toLowerCase())
     )
 
-    // Parse dimensions
+    // Parse dimensions & Weight
     const desc = product.description || '';
-    let length = '0', width = '0', height = '0';
-    
-    // Pattern 1: 120x50x200
-    const dimsMatch = desc.match(/(\d+)\s*[xX*]\s*(\d+)\s*[xX*]\s*(\d+)/);
-    if (dimsMatch) {
-      length = dimsMatch[1];
-      width = dimsMatch[2];
-      height = dimsMatch[3];
-    } else {
-      // Pattern 2: P 120 L 50 T 200
-      const pMatch = desc.match(/[Pp](?:anjang)?\s*[:.]?\s*(\d+)/);
-      const lMatch = desc.match(/[Ll](?:ebar)?\s*[:.]?\s*(\d+)/);
-      const tMatch = desc.match(/[Tt](?:inggi)?\s*[:.]?\s*(\d+)/);
-      
-      if (pMatch) length = pMatch[1];
-      if (lMatch) width = lMatch[1];
-      if (tMatch) height = tMatch[1];
+    let length = '0', width = '0', height = '0', weight = '1';
+
+    // 1. Try to get from Specifications (Most Accurate)
+    try {
+        const specs = product.specifications 
+            ? (typeof product.specifications === 'string' ? JSON.parse(product.specifications) : product.specifications)
+            : {};
+        
+        // Keys found in Shopee: "Panjang", "Lebar", "Tinggi", "Berat Produk"
+        const p = specs['Panjang'] || specs['Length'] || '';
+        const l = specs['Lebar'] || specs['Width'] || '';
+        const t = specs['Tinggi'] || specs['Height'] || '';
+        const b = specs['Berat Produk'] || specs['Berat'] || specs['Weight'] || '';
+
+        // Helper to extract numbers
+        const cleanVal = (val: string) => val ? (val.match(/\d+/) || ['0'])[0] : '0';
+        const cleanWeight = (val: string) => {
+            if (!val) return '1';
+            const num = val.match(/([\d,\.]+)/);
+            if (!num) return '1';
+            let valNum = parseFloat(num[1].replace(',', '.'));
+            // Convert grams to kg if labeled 'g' or 'gr'
+            if (/gr|gram/i.test(val) && !/kg/i.test(val)) valNum = valNum / 1000;
+            return Math.ceil(valNum).toString();
+        }
+
+        if (p) length = cleanVal(p);
+        if (l) width = cleanVal(l);
+        if (t) height = cleanVal(t);
+        if (b) weight = cleanWeight(b);
+    } catch (e) {
+        console.error("Error parsing specs for dimensions", e);
+    }
+
+    // 2. Fallback to Description Pattern Matching if dimensions are still 0
+    if (length === '0' && width === '0' && height === '0') {
+        const dimsMatch = desc.match(/(\d+)\s*[xX*]\s*(\d+)\s*[xX*]\s*(\d+)/);
+        if (dimsMatch) {
+            length = dimsMatch[1];
+            width = dimsMatch[2];
+            height = dimsMatch[3];
+        } else {
+            const pMatch = desc.match(/[Pp](?:anjang)?\s*[:.]?\s*(\d+)/);
+            const lMatch = desc.match(/[Ll](?:ebar)?\s*[:.]?\s*(\d+)/);
+            const tMatch = desc.match(/[Tt](?:inggi)?\s*[:.]?\s*(\d+)/);
+        
+            if (pMatch) length = pMatch[1];
+            if (lMatch) width = lMatch[1];
+            if (tMatch) height = tMatch[1];
+        }
     }
 
     // Extract colors or generic variants

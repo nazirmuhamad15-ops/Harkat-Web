@@ -509,31 +509,126 @@ function getCategory() {
 function getVariants() {
   const variants = [];
   
-  // Strategy 1: Look for rows that look like variant selectors (Label on left, Buttons on right)
-  // Shopee uses specific flex structures. Let's find containers that have buttons.
-  const allButtons = document.querySelectorAll('button');
-  const candidateContainers = new Set();
-  
-  allButtons.forEach(btn => {
-      // Find the row container for this button
-      let parent = btn.parentElement;
-      for(let i=0; i<3; i++) { // Go up a few levels to find the row wrapper
-          if (parent) {
-             const style = window.getComputedStyle(parent);
-             // Look for flex containers with buttons
-             if (style.display === 'flex' || style.display === 'grid') {
-                 candidateContainers.add(parent);
+  try {
+     // STRATEGY: Anchor by "Quantity" row.
+     // Variants (Color, Size) are ALWAYS immediately above the Quantity row.
+     // Action Buttons (Chat, Buy) are ALWAYS below or in a separate footer.
+     
+     // 1. Find the Quantity Label - Looser check
+     const quantityLabel = allTags.find(el => 
+         /Kuantitas|Quantity|Stok|Stock/i.test(el.innerText || '') &&
+         (el.innerText || '').length < 30
+     );
+
+     if (!quantityLabel) {
+         console.log("Quantity label not found, falling back to legacy scan...");
+         return legacyGetVariants(); 
+     }
+
+     // 2. Find the Row Container for Quantity
+     // We look 5 levels up for a container that looks like a row (flex/grid)
+     let quantityRow = quantityLabel.parentElement;
+     let foundRow = false;
+     for(let i=0; i<5; i++) {
+         if(!quantityRow || quantityRow === document.body) break;
+         const style = window.getComputedStyle(quantityRow);
+         // A row usually has flex or grid, OR it has a distinct sibling structure
+         if ((style.display === 'flex' || style.display === 'grid') && quantityRow.children.length > 1) {
+             foundRow = true;
+             break;
+         }
+         quantityRow = quantityRow.parentElement;
+     }
+
+     if (!quantityRow) return legacyGetVariants();
+
+     // 3. Scan Previous Siblings (Look Upwards)
+     // We stop if we hit something that looks like Price or Image, or run out of siblings
+     let curr = quantityRow.previousElementSibling;
+     let attempts = 0;
+     
+     while(curr && attempts < 10) {
+         attempts++;
+         
+         // Extract Label & Options from this row
+         // Heuristic: A variant row usually has a text Label and a Container of Buttons
+         
+         // A: Check for Label (first child or explicitly labelled)
+         let labelText = '';
+         
+         // Try to find a text element that is NOT a button/input
+         const potentialLabels = Array.from(curr.querySelectorAll('*'))
+             .filter(el => {
+                 return el.children.length === 0 && // Leaf node
+                        el.innerText.trim().length > 0 &&
+                        el.tagName !== 'BUTTON' && 
+                        !el.closest('button');
+             });
+             
+         // The first significant text is usually the label (e.g. "Warna", "Ukuran")
+         if (potentialLabels.length > 0) {
+             labelText = potentialLabels[0].innerText.trim();
+         }
+         
+         // Filter out Price/Shipping/Installment rows if we accidentally went too far up
+         if (/Harga|Price|Ongkos|Shipping|Kirim|Cicilan|Voucher|Jaminan|Proteksi|Garansi/i.test(labelText)) {
+             curr = curr.previousElementSibling;
+             continue;
+         }
+
+         // B: Find Options (Buttons)
+         const buttons = Array.from(curr.querySelectorAll('button'));
+         const options = [];
+         
+         buttons.forEach(btn => {
+             // Ignore disabled buttons? No, we might want out of stock variants too.
+             // But we definitely ignore "Help" icons or weird small buttons.
+             const text = btn.innerText?.trim() || btn.getAttribute('aria-label');
+             if (text && text.length > 0) {
+                 // Exclude junk (Quantity buttons, etc)
+                 // "Decrease", "Increase" often appear in aria-labels of quantity steppers
+                 if (/^[\+\-]$|^Decrease$|^Increase$|^Tambah$|^Kurang$/i.test(text)) return; 
+                 options.push(text.replace(/[\n\r]+/g, ' ').trim());
              }
-             parent = parent.parentElement;
-          }
-      }
+         });
+
+         // If we found valid options, add to variants
+         if (options.length > 0) {
+             // Duplicate check
+             if (!variants.some(v => v.name === labelText)) {
+                // We are scanning UP, so we should unshift to keep logical order (Top->Bottom)
+                variants.unshift({ name: labelText || 'Variasi', options });
+             }
+         }
+         
+         curr = curr.previousElementSibling;
+     }
+
+  } catch (e) {
+      console.error("New variant logic failed", e);
+      return legacyGetVariants();
+  }
+  
+  return variants;
+}
+
+// Fallback to the old logic (renamed) just in case
+function legacyGetVariants() {
+  const variants = [];
+  const candidateContainers = Array.from(document.querySelectorAll('div'))
+  .filter(div => {
+      const btns = div.querySelectorAll('button');
+      if (btns.length < 2) return false;
+      const text = div.innerText || '';
+      if (text.length > 500) return false; 
+      return true;
   });
 
   candidateContainers.forEach(row => {
-      // 0. Safety Check: Avoid fixed/sticky containers (e.g. Bottom Action Bar, Top Header)
+      // 0. Safety Check: Avoid fixed/sticky containers (e.g. Bottom Action Bar)
       let isFixed = false;
       let curr = row;
-      for (let k = 0; k < 5; k++) { // Check 5 levels up
+      for (let k = 0; k < 5; k++) {
           if (!curr || curr === document.body) break;
           const style = window.getComputedStyle(curr);
           if (style.position === 'fixed' || style.position === 'sticky') {
@@ -543,65 +638,46 @@ function getVariants() {
           curr = curr.parentElement;
       }
       if (isFixed) return;
-      // 1. Check if this container has a Label sibling or child acting as label
-      // Usually the hierarchy is:  [Label] [Container of Buttons] OR [Row [Label] [ButtonsWrapper]]
-      
+
+      // 1. Label Extraction
       let labelText = '';
-      
-      // Check for Preceding Sibling Label (common in grid layouts)
       let sibling = row.previousElementSibling;
       if (sibling && (sibling.tagName === 'LABEL' || sibling.innerText.length < 30)) {
            labelText = sibling.innerText?.trim();
       }
       
-      // If not found, check Parent's first child (Flex row layout)
       if (!labelText && row.parentElement) {
            const parentRow = row.parentElement;
            const firstChild = parentRow.firstElementChild;
-           // If the row contains "Kuantitas" or "Quantity", ignore it immediately
-           if (parentRow.innerText?.includes('Kuantitas') || parentRow.innerText?.includes('Quantity')) return;
+           // Explicitly ignore Quantity/Chat rows in fallback too
+           if (/Kuantitas|Quantity|Chat|Beli/i.test(parentRow.innerText)) return;
            
            if (firstChild && firstChild !== row && firstChild.innerText.length < 30) {
                labelText = firstChild.innerText?.trim();
            }
       }
 
-      if (!labelText) return; // No label found, unsafe to assume it's a variant
-
-      // 2. Filter out non-variant info rows
+      if (!labelText) return;
       if (/Kuantitas|Quantity|Stok|Stock|Pengiriman|Shipping|Jaminan|Ongkos|Voucher|Cicilan|Favorit|Favorite|Bagikan|Share|Chat|Percakapan|Beli|Keranjang/i.test(labelText)) return;
       
-      // 3. Extract Options from Buttons in this row
-    const options = [];
-    const buttons = row.querySelectorAll('button');
-    
-    buttons.forEach(btn => {
-      // Get text content
-      let text = btn.innerText?.trim() || btn.getAttribute('aria-label');
-      
-      // If button has text, add it
-      if (text) {
-          // Clean up formatting (e.g. remove "Selected" suffix if any)
-          text = text.replace(/[\n\r]+/g, ' ').trim();
-
-          // Aggressive Filter: If button text looks like an action, skip it
-          if (/Chat|Percakapan|Beli|Keranjang|Batal|Simpan|Login|Daftar|Follow|Ikuti/i.test(text)) return;
-
-          if (!options.includes(text)) {
-            options.push(text);
+      const options = [];
+      row.querySelectorAll('button').forEach(btn => {
+          let text = btn.innerText?.trim() || btn.getAttribute('aria-label');
+          if (text) {
+              text = text.replace(/[\n\r]+/g, ' ').trim();
+               // Aggressive Filter
+              if (/Chat|Percakapan|Beli|Keranjang|Batal|Cicilan|Decrease|Increase|Tambah|Kurang/i.test(text)) return;
+              if (/^[\+\-]$/.test(text)) return;
+              if (!options.includes(text)) options.push(text);
           }
-      }
-    });
+      });
 
-    if (options.length > 0) {
-      // Check if we already have this variant group
-      const exists = variants.find(v => v.name === labelText);
-      if (!exists) {
-          variants.push({ name: labelText, options });
+      if (options.length > 0) {
+           if (!variants.find(v => v.name === labelText)) {
+               variants.push({ name: labelText, options });
+           }
       }
-    }
-  });
-
+  }); // end forEach
   return variants;
 }
 
